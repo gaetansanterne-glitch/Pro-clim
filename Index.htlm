@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Clim</title>
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/style.css">
+
+    <meta name="theme-color" content="#0D47A1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+
+<body>
+
+<header>
+
+    <h1>❄️ Pro Clim</h1>
+
+    <p>Le compagnon du technicien CVC</p>
+
+</header>
+
+<main>
+
+<section class="card">
+
+<h2>Bienvenue 👋</h2>
+
+<p>
+Sélectionnez un module.
+</p>
+
+<button id="newStudy">
+📐 Nouvelle étude
+</button>
+
+<button id="depannage">
+🛠 Dépannage
+</button>
+
+<button id="tools">
+🧰 Outils
+</button>
+
+<button id="academy">
+🎓 Académie
+</button>
+
+</section>
+
+</main>
+
+<script src="js/app.js"></script>
+
+</body>
+
+</html>
