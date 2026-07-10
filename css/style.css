@@ -1,0 +1,31 @@
+// ===============================
+// PRO CLIM v0.1.0
+// Gestion de l'accueil
+// ===============================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    console.log("✅ Pro Clim démarré");
+
+    const btnEtude = document.getElementById("newStudy");
+    const btnDepannage = document.getElementById("depannage");
+    const btnOutils = document.getElementById("tools");
+    const btnAcademy = document.getElementById("academy");
+
+    btnEtude.addEventListener("click", () => {
+        alert("📐 Module Étude\n\nDisponible dans la prochaine version.");
+    });
+
+    btnDepannage.addEventListener("click", () => {
+        alert("🛠 Module Dépannage\n\nEn cours de développement.");
+    });
+
+    btnOutils.addEventListener("click", () => {
+        alert("🧰 Outils CVC\n\nBientôt disponible.");
+    });
+
+    btnAcademy.addEventListener("click", () => {
+        alert("🎓 Académie Pro Clim\n\nArrive prochainement.");
+    });
+
+});
