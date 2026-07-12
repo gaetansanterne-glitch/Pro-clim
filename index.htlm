@@ -53,8 +53,8 @@ Sélectionnez un module.
 
 </main>
 
-<script src="Js/script.js"></script>
-<script src="Js/diagnostic.js"></script>
+<script src="js/script.js"></script>
+<script src="js/diagnostic.js"></script>
 
 </body>
 
