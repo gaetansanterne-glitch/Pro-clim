@@ -41,6 +41,10 @@ Sélectionnez un module.
 🛠 Dépannage
 </button>
 
+<button id="pressures">
+    🌡️ Pressions Fluides
+</button>
+
 <button id="tools">
 🧰 Outils
 </button>
