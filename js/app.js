@@ -6,8 +6,10 @@
 
 console.log("✅ Pro Clim démarré");
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContent Loaded", () => {
 
+   ROUTER.initialiser();
+    
     console.log("Application chargée");
 
 });
