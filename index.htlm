@@ -1,61 +1,1019 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0,
+                   maximum-scale=1.0,
+                   user-scalable=no">
+
     <title>Pro Clim</title>
 
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest"
+          href="manifest.json">
 
-    <meta name="theme-color" content="#0D47A1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <meta name="theme-color"
+          content="#0D47A1">
+
+    <meta name="apple-mobile-web-app-capable"
+          content="yes">
+
+    <meta name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent">
 </head>
 
 <body>
 
-<header>
+<!-- ==========================================
+     HEADER
+========================================== -->
 
-    <h1>❄️ Pro Clim</h1>
+<header class="app-header">
 
-    <p>Le compagnon du technicien CVC</p>
+    <div>
+        <h1>❄️ Pro Clim</h1>
+        <p>Assistant du technicien CVC</p>
+    </div>
 
 </header>
 
+
+<!-- ==========================================
+     CONTENU PRINCIPAL
+========================================== -->
+
 <main>
 
-<section class="card">
 
-<h2>Bienvenue 👋</h2>
+<!-- ==========================================
+     ACCUEIL
+========================================== -->
 
-<p>
-Sélectionnez un module.
-</p>
+<section id="pageAccueil"
+         class="page active">
 
-<button id="newStudy">
-📐 Nouvelle étude
-</button>
+    <div class="hero card">
 
-<button id="depannage">
-🛠 Dépannage
-</button>
+        <span class="hero-icon">❄️</span>
 
-<button id="pressures">
-    🌡️ Pressions Fluides
-</button>
+        <h2>Bienvenue sur Pro Clim</h2>
 
-<button id="tools">
-🧰 Outils
-</button>
+        <p>
+            Votre assistant pour les études,
+            le dépannage et les outils CVC.
+        </p>
 
-<button id="academy">
-🎓 Académie
-</button>
+        <button id="btnCommencer"
+                class="btn-primary">
+
+            📐 Nouvelle étude
+
+        </button>
+
+    </div>
+
+
+    <div class="quick-grid">
+
+        <button id="btnAccueilEtude"
+                class="quick-card">
+
+            <span>📐</span>
+            <strong>Étude</strong>
+            <small>Dimensionnement</small>
+
+        </button>
+
+
+        <button id="btnAccueilDiagnostic"
+                class="quick-card">
+
+            <span>🛠️</span>
+            <strong>Diagnostic</strong>
+            <small>Dépannage</small>
+
+        </button>
+
+
+        <button id="btnAccueilPression"
+                class="quick-card">
+
+            <span>🌡️</span>
+            <strong>Pressions</strong>
+            <small>Fluides frigorigènes</small>
+
+        </button>
+
+
+        <button id="btnAccueilOutils"
+                class="quick-card">
+
+            <span>🧰</span>
+            <strong>Outils</strong>
+            <small>Calculs CVC</small>
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     ETUDE
+========================================== -->
+
+<section id="pageEtude"
+         class="page">
+
+
+    <div class="page-title">
+
+        <button id="btnRetourAccueil"
+                class="btn-back">
+
+            ←
+
+        </button>
+
+        <div>
+
+            <span>DIMENSIONNEMENT</span>
+
+            <h2>Nouvelle étude</h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- PROGRESSION -->
+
+    <div class="progress-container">
+
+        <div class="progress-info">
+
+            <span id="etapeLabel">
+                Étape 1 sur 5
+            </span>
+
+            <span id="progressPercent">
+                20 %
+            </span>
+
+        </div>
+
+        <div class="progress-bar">
+
+            <div id="progressBar"
+                 class="progress-value">
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ======================================
+         ETAPE 1
+    ======================================= -->
+
+    <div id="etape1"
+         class="study-step active">
+
+        <div class="card">
+
+            <span class="step-icon">📏</span>
+
+            <h3>Dimensions du local</h3>
+
+            <p class="step-description">
+                Indique les dimensions intérieures
+                de la pièce à traiter.
+            </p>
+
+
+            <div class="field">
+
+                <label for="longueur">
+                    Longueur
+                </label>
+
+                <div class="input-unit">
+
+                    <input id="longueur"
+                           type="number"
+                           inputmode="decimal"
+                           min="0.1"
+                           step="0.01"
+                           placeholder="Ex. 5">
+
+                    <span>m</span>
+
+                </div>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="largeur">
+                    Largeur
+                </label>
+
+                <div class="input-unit">
+
+                    <input id="largeur"
+                           type="number"
+                           inputmode="decimal"
+                           min="0.1"
+                           step="0.01"
+                           placeholder="Ex. 4">
+
+                    <span>m</span>
+
+                </div>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="hauteur">
+                    Hauteur sous plafond
+                </label>
+
+                <div class="input-unit">
+
+                    <input id="hauteur"
+                           type="number"
+                           inputmode="decimal"
+                           min="1"
+                           step="0.01"
+                           placeholder="Ex. 2.5">
+
+                    <span>m</span>
+
+                </div>
+
+            </div>
+
+
+            <div id="erreurEtape1"
+                 class="error-message">
+            </div>
+
+
+            <button id="btnEtape1"
+                    class="btn-primary">
+
+                Continuer →
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ======================================
+         ETAPE 2
+    ======================================= -->
+
+    <div id="etape2"
+         class="study-step">
+
+        <div class="card">
+
+            <span class="step-icon">🏠</span>
+
+            <h3>Caractéristiques du bâtiment</h3>
+
+            <p class="step-description">
+                Ces informations permettent
+                d'affiner le besoin thermique.
+            </p>
+
+
+            <div class="choice-group">
+
+                <label>Isolation</label>
+
+                <div class="choice-grid">
+
+                    <button class="choice"
+                            data-name="isolation"
+                            data-value="Excellente">
+
+                        Excellente
+
+                    </button>
+
+                    <button class="choice"
+                            data-name="isolation"
+                            data-value="Bonne">
+
+                        Bonne
+
+                    </button>
+
+                    <button class="choice selected"
+                            data-name="isolation"
+                            data-value="Moyenne">
+
+                        Moyenne
+
+                    </button>
+
+                    <button class="choice"
+                            data-name="isolation"
+                            data-value="Mauvaise">
+
+                        Mauvaise
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="choice-group">
+
+                <label>Vitrage</label>
+
+                <div class="choice-grid">
+
+                    <button class="choice"
+                            data-name="vitrage"
+                            data-value="Simple">
+
+                        Simple
+
+                    </button>
+
+                    <button class="choice selected"
+                            data-name="vitrage"
+                            data-value="Double">
+
+                        Double
+
+                    </button>
+
+                    <button class="choice"
+                            data-name="vitrage"
+                            data-value="Triple">
+
+                        Triple
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="choice-group">
+
+                <label>Exposition principale</label>
+
+                <div class="choice-grid">
+
+                    <button class="choice"
+                            data-name="exposition"
+                            data-value="Nord">
+
+                        Nord
+
+                    </button>
+
+                    <button class="choice"
+                            data-name="exposition"
+                            data-value="Est">
+
+                        Est
+
+                    </button>
+
+                    <button class="choice selected"
+                            data-name="exposition"
+                            data-value="Sud">
+
+                        Sud
+
+                    </button>
+
+                    <button class="choice"
+                            data-name="exposition"
+                            data-value="Ouest">
+
+                        Ouest
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="navigation-buttons">
+
+                <button id="btnRetour2"
+                        class="btn-secondary">
+
+                    ← Retour
+
+                </button>
+
+                <button id="btnEtape2"
+                        class="btn-primary">
+
+                    Continuer →
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ======================================
+         ETAPE 3
+    ======================================= -->
+
+    <div id="etape3"
+         class="study-step">
+
+        <div class="card">
+
+            <span class="step-icon">☀️</span>
+
+            <h3>Environnement</h3>
+
+            <p class="step-description">
+                Complète les informations liées
+                à la situation du local.
+            </p>
+
+
+            <div class="choice-group">
+
+                <label>Étage</label>
+
+                <div class="choice-grid">
+
+                    <button class="choice selected"
+                            data-name="etage"
+                            data-value="RDC">
+
+                        RDC
+
+                    </button>
+
+                    <button class="choice"
+                            data-name="etage"
+                            data-value="Intermediaire">
+
+                        Intermédiaire
+
+                    </button>
+
+                    <button class="choice"
+                            data-name="etage"
+                            data-value="Dernier">
+
+                        Dernier étage
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="choice-group">
+
+                <label>Toiture au-dessus du local</label>
+
+                <div class="choice-grid">
+
+                    <button class="choice selected"
+                            data-name="toiture"
+                            data-value="Non">
+
+                        Non
+
+                    </button>
+
+                    <button class="choice"
+                            data-name="toiture"
+                            data-value="Oui">
+
+                        Oui
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="choice-group">
+
+                <label>Région</label>
+
+                <div class="choice-grid">
+
+                    <button class="choice"
+                            data-name="region"
+                            data-value="Nord">
+
+                        Nord
+
+                    </button>
+
+                    <button class="choice selected"
+                            data-name="region"
+                            data-value="Centre">
+
+                        Centre
+
+                    </button>
+
+                    <button class="choice"
+                            data-name="region"
+                            data-value="Sud">
+
+                        Sud
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="navigation-buttons">
+
+                <button id="btnRetour3"
+                        class="btn-secondary">
+
+                    ← Retour
+
+                </button>
+
+                <button id="btnEtape3"
+                        class="btn-primary">
+
+                    Continuer →
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ======================================
+         ETAPE 4
+    ======================================= -->
+
+    <div id="etape4"
+         class="study-step">
+
+        <div class="card">
+
+            <span class="step-icon">👥</span>
+
+            <h3>Occupation et apports</h3>
+
+            <p class="step-description">
+                Ces paramètres permettent
+                d'affiner le calcul.
+            </p>
+
+
+            <div class="field">
+
+                <label for="occupation">
+                    Nombre d'occupants
+                </label>
+
+                <select id="occupation">
+
+                    <option value="1">
+                        1 personne
+                    </option>
+
+                    <option value="2">
+                        2 personnes
+                    </option>
+
+                    <option value="3">
+                        3 personnes
+                    </option>
+
+                    <option value="4"
+                            selected>
+                        4 personnes
+                    </option>
+
+                    <option value="5">
+                        5 personnes
+                    </option>
+
+                    <option value="6">
+                        6 personnes ou +
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="eclairage">
+                    Éclairage
+                </label>
+
+                <select id="eclairage">
+
+                    <option value="LED">
+                        LED
+                    </option>
+
+                    <option value="Standard"
+                            selected>
+                        Standard
+                    </option>
+
+                    <option value="Halogene">
+                        Halogène
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="informatique">
+                    Informatique
+                </label>
+
+                <select id="informatique">
+
+                    <option value="Aucun">
+                        Aucun
+                    </option>
+
+                    <option value="Faible">
+                        Faible
+                    </option>
+
+                    <option value="Moyen"
+                            selected>
+                        Moyen
+                    </option>
+
+                    <option value="Important">
+                        Important
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div id="erreurEtape4"
+                 class="error-message">
+            </div>
+
+
+            <div class="navigation-buttons">
+
+                <button id="btnRetour4"
+                        class="btn-secondary">
+
+                    ← Retour
+
+                </button>
+
+                <button id="btnCalculer"
+                        class="btn-primary">
+
+                    🚀 Calculer
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ======================================
+         ETAPE 5 — RESULTATS
+    ======================================= -->
+
+    <div id="etape5"
+         class="study-step">
+
+        <div class="card result-card">
+
+            <span class="step-icon">📊</span>
+
+            <h3>Résultat de l'étude</h3>
+
+            <p class="step-description">
+                Voici le dimensionnement estimatif
+                de votre installation.
+            </p>
+
+
+            <div class="result-grid">
+
+
+                <div class="result-item">
+
+                    <span>Surface</span>
+
+                    <strong id="resSurface">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="result-item">
+
+                    <span>Volume</span>
+
+                    <strong id="resVolume">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="result-item highlight">
+
+                    <span>Puissance</span>
+
+                    <strong id="resPuissance">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="result-item">
+
+                    <span>Débit d'air</span>
+
+                    <strong id="resDebit">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="result-item">
+
+                    <span>Nombre de bouches</span>
+
+                    <strong id="resBouches">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="result-item">
+
+                    <span>Diamètre réseau</span>
+
+                    <strong id="resDiametre">
+                        —
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="recommendation-box">
+
+                <span>❄️</span>
+
+                <div>
+
+                    <small>Solution recommandée</small>
+
+                    <strong id="resSplit">
+                        —
+                    </strong>
+
+                    <strong id="resGainable">
+                        —
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div id="commentaires"
+                 class="comments-box">
+            </div>
+
+
+            <button id="btnNouvelleEtude"
+                    class="btn-primary">
+
+                📐 Nouvelle étude
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     DIAGNOSTIC
+========================================== -->
+
+<section id="pageDiagnostic"
+         class="page">
+
+    <div class="card">
+
+        <span class="step-icon">🛠️</span>
+
+        <h2>Diagnostic</h2>
+
+        <p>
+            Module de diagnostic CVC.
+        </p>
+
+        <p class="coming-soon">
+            🚧 Module en développement
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     PRESSIONS
+========================================== -->
+
+<section id="pagePression"
+         class="page">
+
+    <div class="card">
+
+        <span class="step-icon">🌡️</span>
+
+        <h2>Pressions fluides</h2>
+
+        <p>
+            Contrôle et analyse des pressions
+            frigorifiques.
+        </p>
+
+        <p class="coming-soon">
+            🚧 Module en développement
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     OUTILS
+========================================== -->
+
+<section id="pageOutils"
+         class="page">
+
+    <div class="card">
+
+        <span class="step-icon">🧰</span>
+
+        <h2>Outils CVC</h2>
+
+        <p>
+            Calculs et outils techniques.
+        </p>
+
+        <p class="coming-soon">
+            🚧 Module en développement
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     ACADEMIE
+========================================== -->
+
+<section id="pageAcademie"
+         class="page">
+
+    <div class="card">
+
+        <span class="step-icon">🎓</span>
+
+        <h2>Académie</h2>
+
+        <p>
+            Formation et aide technique
+            pour les techniciens CVC.
+        </p>
+
+        <p class="coming-soon">
+            🚧 Module en développement
+        </p>
+
+    </div>
 
 </section>
 
 </main>
+
+
+<!-- ==========================================
+     NAVIGATION BASSE
+========================================== -->
+
+<nav class="bottom-nav">
+
+    <button id="navAccueil">
+
+        <span>🏠</span>
+        <small>Accueil</small>
+
+    </button>
+
+
+    <button id="navEtude">
+
+        <span>📐</span>
+        <small>Étude</small>
+
+    </button>
+
+
+    <button id="navDiagnostic">
+
+        <span>🛠️</span>
+        <small>Diagnostic</small>
+
+    </button>
+
+
+    <button id="navOutils">
+
+        <span>🧰</span>
+        <small>Outils</small>
+
+    </button>
+
+
+    <button id="navAcademie">
+
+        <span>🎓</span>
+        <small>Académie</small>
+
+    </button>
+
+</nav>
+
+
+<!-- ==========================================
+     JAVASCRIPT
+========================================== -->
 
 <script src="js/coefficients.js"></script>
 <script src="js/gaines.js"></script>
@@ -67,5 +1025,4 @@ Sélectionnez un module.
 <script src="js/app.js"></script>
 
 </body>
-
 </html>
