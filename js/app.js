@@ -1,16 +1,22 @@
 /* ==========================================
    PRO CLIM
-   APP.JS — V2
+   APP.JS V2
+   Gestion de l'application et navigation
 ========================================== */
 
-const APP = {
+document.addEventListener("DOMContentLoaded", () => {
 
-    etape: 1,
+    /* ==========================================
+       ETAT DE L'APPLICATION
+    ========================================== */
 
-    data: {
-        longueur: null,
-        largeur: null,
-        hauteur: null,
+    let etapeActuelle = 1;
+
+    const donneesEtude = {
+
+        longueur: 0,
+        largeur: 0,
+        hauteur: 0,
 
         isolation: "Moyenne",
         vitrage: "Double",
@@ -20,701 +26,103 @@ const APP = {
         toiture: "Non",
         region: "Centre",
 
-        occupation: "4",
+        occupation: 4,
         eclairage: "Standard",
         informatique: "Moyen"
-    },
+
+    };
 
 
-    /* ======================================
-       INITIALISATION
-    ====================================== */
+    /* ==========================================
+       ELEMENTS DES PAGES
+    ========================================== */
 
-    init() {
+    const pages = {
 
-        console.log("🚀 Pro Clim V2");
+        accueil: document.getElementById("pageAccueil"),
+        etude: document.getElementById("pageEtude"),
+        diagnostic: document.getElementById("pageDiagnostic"),
+        pression: document.getElementById("pagePression"),
+        outils: document.getElementById("pageOutils"),
+        academie: document.getElementById("pageAcademie")
 
-        this.initialiserNavigation();
-        this.initialiserEtude();
-        this.initialiserChoix();
-
-        this.afficherPage("pageAccueil");
-
-        this.afficherEtape(1);
-
-    },
+    };
 
 
-    /* ======================================
-       NAVIGATION PRINCIPALE
-    ====================================== */
+    /* ==========================================
+       AFFICHER UNE PAGE
+    ========================================== */
 
-    initialiserNavigation() {
+    function afficherPage(page) {
 
-        const navigation = {
+        Object.values(pages).forEach(section => {
 
-            btnCommencer: "pageEtude",
-            btnAccueilEtude: "pageEtude",
-            btnAccueilDiagnostic: "pageDiagnostic",
-            btnAccueilPression: "pagePression",
-            btnAccueilOutils: "pageOutils",
-            btnRetourAccueil: "pageAccueil",
-
-            navAccueil: "pageAccueil",
-            navEtude: "pageEtude",
-            navDiagnostic: "pageDiagnostic",
-            navOutils: "pageOutils",
-            navAcademie: "pageAcademie"
-
-        };
-
-
-        Object.keys(navigation).forEach(id => {
-
-            const bouton = document.getElementById(id);
-
-            if (!bouton) return;
-
-            bouton.addEventListener("click", () => {
-
-                this.afficherPage(
-                    navigation[id]
-                );
-
-            });
+            if (section) {
+                section.classList.remove("active");
+            }
 
         });
 
-    },
+        if (pages[page]) {
 
-
-    afficherPage(id) {
-
-        document
-            .querySelectorAll(".page")
-            .forEach(page => {
-
-                page.classList.remove("active");
-
-            });
-
-
-        const page =
-            document.getElementById(id);
-
-        if (page) {
-
-            page.classList.add("active");
+            pages[page].classList.add("active");
 
         }
-
 
         window.scrollTo({
             top: 0,
             behavior: "smooth"
         });
 
-    },
+    }
 
 
-    /* ======================================
-       INITIALISATION ETUDE
-    ====================================== */
+    /* ==========================================
+       AFFICHER UNE ETAPE
+    ========================================== */
 
-    initialiserEtude() {
+    function afficherEtape(numero) {
 
-        document
-            .getElementById("btnEtape1")
-            ?.addEventListener(
-                "click",
-                () => this.validerEtape1()
-            );
+        etapeActuelle = numero;
 
+        for (let i = 1; i <= 5; i++) {
 
-        document
-            .getElementById("btnEtape2")
-            ?.addEventListener(
-                "click",
-                () => this.validerEtape2()
-            );
+            const etape =
+                document.getElementById(`etape${i}`);
 
+            if (etape) {
 
-        document
-            .getElementById("btnEtape3")
-            ?.addEventListener(
-                "click",
-                () => this.validerEtape3()
-            );
-
-
-        document
-            .getElementById("btnCalculer")
-            ?.addEventListener(
-                "click",
-                () => this.calculer()
-            );
-
-
-        document
-            .getElementById("btnRetour2")
-            ?.addEventListener(
-                "click",
-                () => this.afficherEtape(1)
-            );
-
-
-        document
-            .getElementById("btnRetour3")
-            ?.addEventListener(
-                "click",
-                () => this.afficherEtape(2)
-            );
-
-
-        document
-            .getElementById("btnRetour4")
-            ?.addEventListener(
-                "click",
-                () => this.afficherEtape(3)
-            );
-
-
-        document
-            .getElementById("btnNouvelleEtude")
-            ?.addEventListener(
-                "click",
-                () => this.nouvelleEtude()
-            );
-
-    },
-
-
-    /* ======================================
-       CHOIX
-    ====================================== */
-
-    initialiserChoix() {
-
-        document
-            .querySelectorAll(".choice")
-            .forEach(bouton => {
-
-                bouton.addEventListener(
-                    "click",
-                    () => {
-
-                        const nom =
-                            bouton.dataset.name;
-
-                        const valeur =
-                            bouton.dataset.value;
-
-
-                        document
-                            .querySelectorAll(
-                                `.choice[data-name="${nom}"]`
-                            )
-                            .forEach(element => {
-
-                                element.classList.remove(
-                                    "selected"
-                                );
-
-                            });
-
-
-                        bouton.classList.add(
-                            "selected"
-                        );
-
-
-                        this.data[nom] =
-                            valeur;
-
-                    }
-                );
-
-            });
-
-    },
-
-
-    /* ======================================
-       ETAPE 1
-    ====================================== */
-
-    validerEtape1() {
-
-        const longueur =
-            this.nombre("longueur");
-
-        const largeur =
-            this.nombre("largeur");
-
-        const hauteur =
-            this.nombre("hauteur");
-
-
-        const erreur =
-            document.getElementById(
-                "erreurEtape1"
-            );
-
-
-        if (
-            longueur <= 0 ||
-            largeur <= 0 ||
-            hauteur <= 0
-        ) {
-
-            erreur.textContent =
-                "⚠️ Indique des dimensions valides.";
-
-            return;
-
-        }
-
-
-        if (hauteur < 1.8 || hauteur > 10) {
-
-            erreur.textContent =
-                "⚠️ La hauteur doit être comprise entre 1,80 m et 10 m.";
-
-            return;
-
-        }
-
-
-        erreur.textContent = "";
-
-
-        this.data.longueur = longueur;
-        this.data.largeur = largeur;
-        this.data.hauteur = hauteur;
-
-
-        this.afficherEtape(2);
-
-    },
-
-
-    /* ======================================
-       ETAPE 2
-    ====================================== */
-
-    validerEtape2() {
-
-        this.afficherEtape(3);
-
-    },
-
-
-    /* ======================================
-       ETAPE 3
-    ====================================== */
-
-    validerEtape3() {
-
-        this.afficherEtape(4);
-
-    },
-
-
-    /* ======================================
-       CALCUL
-    ====================================== */
-
-    calculer() {
-
-        const erreur =
-            document.getElementById(
-                "erreurEtape4"
-            );
-
-
-        this.data.occupation =
-            document.getElementById(
-                "occupation"
-            ).value;
-
-
-        this.data.eclairage =
-            document.getElementById(
-                "eclairage"
-            ).value;
-
-
-        this.data.informatique =
-            document.getElementById(
-                "informatique"
-            ).value;
-
-
-        try {
-
-            if (
-                typeof ETUDE === "undefined"
-            ) {
-
-                throw new Error(
-                    "Le module ETUDE n'est pas chargé."
+                etape.classList.toggle(
+                    "active",
+                    i === numero
                 );
 
             }
 
-
-            const resultat =
-                ETUDE.calcul(
-                    this.data
-                );
-
-
-            if (!resultat) {
-
-                throw new Error(
-                    "Aucun résultat retourné."
-                );
-
-            }
-
-
-            this.afficherResultats(
-                resultat
-            );
-
-
-            erreur.textContent = "";
-
-
-            this.afficherEtape(5);
-
-
-        } catch (error) {
-
-            console.error(
-                "Erreur Pro Clim :",
-                error
-            );
-
-
-            erreur.textContent =
-                "❌ Impossible de calculer l'étude. Vérifie les modules JavaScript.";
-
-        }
-
-    },
-
-
-    /* ======================================
-       AFFICHAGE RESULTATS
-    ====================================== */
-
-    afficherResultats(resultat) {
-
-        this.afficher(
-            "resSurface",
-            this.formatNombre(
-                resultat.surface
-            ) + " m²"
-        );
-
-
-        this.afficher(
-            "resVolume",
-            this.formatNombre(
-                resultat.volume
-            ) + " m³"
-        );
-
-
-        this.afficher(
-            "resPuissance",
-            this.formatPuissance(
-                resultat.puissance
-            )
-        );
-
-
-        this.afficher(
-            "resDebit",
-            this.formatNombre(
-                resultat.debit
-            ) + " m³/h"
-        );
-
-
-        this.afficher(
-            "resBouches",
-            resultat.bouches
-        );
-
-
-        this.afficher(
-            "resDiametre",
-            "Ø " + resultat.diametre + " mm"
-        );
-
-
-        this.afficher(
-            "resSplit",
-            resultat.split || "—"
-        );
-
-
-        this.afficher(
-            "resGainable",
-            resultat.gainable || "—"
-        );
-
-
-        this.afficherCommentaires(
-            resultat.commentaires
-        );
-
-    },
-
-
-    afficherCommentaires(commentaires) {
-
-        const bloc =
-            document.getElementById(
-                "commentaires"
-            );
-
-
-        if (!bloc) return;
-
-
-        bloc.innerHTML = "";
-
-
-        if (
-            !commentaires ||
-            commentaires.length === 0
-        ) {
-
-            return;
-
         }
 
 
-        commentaires.forEach(commentaire => {
-
-            const ligne =
-                document.createElement(
-                    "p"
-                );
-
-
-            ligne.textContent =
-                commentaire;
-
-
-            bloc.appendChild(
-                ligne
-            );
-
-        });
-
-    },
-
-
-    /* ======================================
-       NOUVELLE ETUDE
-    ====================================== */
-
-    nouvelleEtude() {
-
-        this.data = {
-
-            longueur: null,
-            largeur: null,
-            hauteur: null,
-
-            isolation: "Moyenne",
-            vitrage: "Double",
-            exposition: "Sud",
-
-            etage: "RDC",
-            toiture: "Non",
-            region: "Centre",
-
-            occupation: "4",
-            eclairage: "Standard",
-            informatique: "Moyen"
-
-        };
-
-
-        document
-            .getElementById("longueur")
-            .value = "";
-
-
-        document
-            .getElementById("largeur")
-            .value = "";
-
-
-        document
-            .getElementById("hauteur")
-            .value = "";
-
-
-        document
-            .getElementById("occupation")
-            .value = "4";
-
-
-        document
-            .getElementById("eclairage")
-            .value = "Standard";
-
-
-        document
-            .getElementById("informatique")
-            .value = "Moyen";
-
-
-        document
-            .querySelectorAll(".choice")
-            .forEach(bouton => {
-
-                bouton.classList.remove(
-                    "selected"
-                );
-
-            });
-
-
-        this.selectionner(
-            "isolation",
-            "Moyenne"
-        );
-
-
-        this.selectionner(
-            "vitrage",
-            "Double"
-        );
-
-
-        this.selectionner(
-            "exposition",
-            "Sud"
-        );
-
-
-        this.selectionner(
-            "etage",
-            "RDC"
-        );
-
-
-        this.selectionner(
-            "toiture",
-            "Non"
-        );
-
-
-        this.selectionner(
-            "region",
-            "Centre"
-        );
-
-
-        this.afficherPage(
-            "pageEtude"
-        );
-
-
-        this.afficherEtape(1);
-
-    },
-
-
-    selectionner(nom, valeur) {
-
-        const bouton =
-            document.querySelector(
-                `.choice[data-name="${nom}"][data-value="${valeur}"]`
-            );
-
-
-        if (bouton) {
-
-            bouton.classList.add(
-                "selected"
-            );
-
-        }
-
-    },
-
-
-    /* ======================================
-       ETAPES
-    ====================================== */
-
-    afficherEtape(numero) {
-
-        this.etape = numero;
-
-
-        document
-            .querySelectorAll(".study-step")
-            .forEach(etape => {
-
-                etape.classList.remove(
-                    "active"
-                );
-
-            });
-
-
-        const cible =
-            document.getElementById(
-                `etape${numero}`
-            );
-
-
-        if (cible) {
-
-            cible.classList.add(
-                "active"
-            );
-
-        }
-
-
-        const pourcentage =
-            numero * 20;
-
-
-        const barre =
-            document.getElementById(
-                "progressBar"
-            );
-
+        /* Progression */
 
         const label =
-            document.getElementById(
-                "etapeLabel"
-            );
+            document.getElementById("etapeLabel");
+
+        const pourcentage =
+            document.getElementById("progressPercent");
+
+        const barre =
+            document.getElementById("progressBar");
 
 
-        const pourcent =
-            document.getElementById(
-                "progressPercent"
-            );
+        const pourcentages = {
 
+            1: 20,
+            2: 40,
+            3: 60,
+            4: 80,
+            5: 100
 
-        if (barre) {
-
-            barre.style.width =
-                `${pourcentage}%`;
-
-        }
+        };
 
 
         if (label) {
@@ -725,10 +133,18 @@ const APP = {
         }
 
 
-        if (pourcent) {
+        if (pourcentage) {
 
-            pourcent.textContent =
-                `${pourcentage} %`;
+            pourcentage.textContent =
+                `${pourcentages[numero]} %`;
+
+        }
+
+
+        if (barre) {
+
+            barre.style.width =
+                `${pourcentages[numero]}%`;
 
         }
 
@@ -738,100 +154,752 @@ const APP = {
             behavior: "smooth"
         });
 
-    },
+    }
 
 
-    /* ======================================
-       OUTILS
-    ====================================== */
+    /* ==========================================
+       DEMARRER UNE ETUDE
+    ========================================== */
 
-    nombre(id) {
+    function nouvelleEtude() {
 
-        const element =
-            document.getElementById(id);
+        afficherPage("etude");
 
+        afficherEtape(1);
 
-        if (!element) {
-
-            return 0;
-
-        }
+    }
 
 
-        return parseFloat(
-            String(element.value)
-                .replace(",", ".")
-        ) || 0;
+    /* ==========================================
+       BOUTON NOUVELLE ETUDE
+    ========================================== */
 
-    },
+    const btnCommencer =
+        document.getElementById("btnCommencer");
 
+    if (btnCommencer) {
 
-    afficher(id, valeur) {
-
-        const element =
-            document.getElementById(id);
-
-
-        if (element) {
-
-            element.textContent =
-                valeur;
-
-        }
-
-    },
-
-
-    formatNombre(nombre) {
-
-        return Number(nombre)
-            .toLocaleString(
-                "fr-FR",
-                {
-                    maximumFractionDigits: 2
-                }
-            );
-
-    },
-
-
-    formatPuissance(watts) {
-
-        if (watts >= 1000) {
-
-            return (
-                (watts / 1000)
-                    .toLocaleString(
-                        "fr-FR",
-                        {
-                            maximumFractionDigits: 1
-                        }
-                    )
-                + " kW"
-            );
-
-        }
-
-
-        return (
-            this.formatNombre(watts)
-            + " W"
+        btnCommencer.addEventListener(
+            "click",
+            nouvelleEtude
         );
 
     }
 
-};
 
+    const btnAccueilEtude =
+        document.getElementById("btnAccueilEtude");
 
-/* ==========================================
-   DEMARRAGE
-========================================== */
+    if (btnAccueilEtude) {
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        APP.init();
+        btnAccueilEtude.addEventListener(
+            "click",
+            nouvelleEtude
+        );
 
     }
-);
+
+
+    /* ==========================================
+       ETAPE 1
+    ========================================== */
+
+    const btnEtape1 =
+        document.getElementById("btnEtape1");
+
+    if (btnEtape1) {
+
+        btnEtape1.addEventListener(
+            "click",
+            () => {
+
+                const longueur =
+                    parseFloat(
+                        document.getElementById("longueur").value
+                    );
+
+                const largeur =
+                    parseFloat(
+                        document.getElementById("largeur").value
+                    );
+
+                const hauteur =
+                    parseFloat(
+                        document.getElementById("hauteur").value
+                    );
+
+
+                const erreur =
+                    document.getElementById(
+                        "erreurEtape1"
+                    );
+
+
+                if (
+                    !longueur ||
+                    !largeur ||
+                    !hauteur ||
+                    longueur <= 0 ||
+                    largeur <= 0 ||
+                    hauteur <= 0
+                ) {
+
+                    erreur.textContent =
+                        "⚠️ Merci de renseigner des dimensions valides.";
+
+                    return;
+
+                }
+
+
+                erreur.textContent = "";
+
+
+                donneesEtude.longueur =
+                    longueur;
+
+                donneesEtude.largeur =
+                    largeur;
+
+                donneesEtude.hauteur =
+                    hauteur;
+
+
+                afficherEtape(2);
+
+            }
+        );
+
+    }
+
+
+    /* ==========================================
+       ETAPE 2
+    ========================================== */
+
+    const btnEtape2 =
+        document.getElementById("btnEtape2");
+
+    if (btnEtape2) {
+
+        btnEtape2.addEventListener(
+            "click",
+            () => {
+
+                afficherEtape(3);
+
+            }
+        );
+
+    }
+
+
+    /* ==========================================
+       ETAPE 3
+    ========================================== */
+
+    const btnEtape3 =
+        document.getElementById("btnEtape3");
+
+    if (btnEtape3) {
+
+        btnEtape3.addEventListener(
+            "click",
+            () => {
+
+                afficherEtape(4);
+
+            }
+        );
+
+    }
+
+
+    /* ==========================================
+       CHOIX DES BOUTONS
+    ========================================== */
+
+    document
+        .querySelectorAll(".choice")
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const nom =
+                        button.dataset.name;
+
+                    const valeur =
+                        button.dataset.value;
+
+
+                    document
+                        .querySelectorAll(
+                            `.choice[data-name="${nom}"]`
+                        )
+                        .forEach(btn => {
+
+                            btn.classList.remove(
+                                "selected"
+                            );
+
+                        });
+
+
+                    button.classList.add(
+                        "selected"
+                    );
+
+
+                    if (nom) {
+
+                        donneesEtude[nom] =
+                            valeur;
+
+                    }
+
+                }
+            );
+
+        });
+
+
+    /* ==========================================
+       SELECTS ETAPE 4
+    ========================================== */
+
+    const occupation =
+        document.getElementById("occupation");
+
+    const eclairage =
+        document.getElementById("eclairage");
+
+    const informatique =
+        document.getElementById("informatique");
+
+
+    if (occupation) {
+
+        occupation.addEventListener(
+            "change",
+            () => {
+
+                donneesEtude.occupation =
+                    parseInt(
+                        occupation.value,
+                        10
+                    );
+
+            }
+        );
+
+    }
+
+
+    if (eclairage) {
+
+        eclairage.addEventListener(
+            "change",
+            () => {
+
+                donneesEtude.eclairage =
+                    eclairage.value;
+
+            }
+        );
+
+    }
+
+
+    if (informatique) {
+
+        informatique.addEventListener(
+            "change",
+            () => {
+
+                donneesEtude.informatique =
+                    informatique.value;
+
+            }
+        );
+
+    }
+
+
+    /* ==========================================
+       CALCUL
+    ========================================== */
+
+    const btnCalculer =
+        document.getElementById("btnCalculer");
+
+
+    if (btnCalculer) {
+
+        btnCalculer.addEventListener(
+            "click",
+            calculerEtude
+        );
+
+    }
+
+
+    function calculerEtude() {
+
+        const erreur =
+            document.getElementById(
+                "erreurEtape4"
+            );
+
+
+        try {
+
+            let resultat;
+
+
+            /*
+             * On utilise ETUDE.calculComplet
+             * si le module est disponible.
+             */
+
+            if (
+                typeof ETUDE !== "undefined" &&
+                typeof ETUDE.calculComplet === "function"
+            ) {
+
+                resultat =
+                    ETUDE.calculComplet(
+                        donneesEtude
+                    );
+
+            } else {
+
+                throw new Error(
+                    "Le module ETUDE n'est pas chargé."
+                );
+
+            }
+
+
+            afficherResultats(resultat);
+
+            afficherEtape(5);
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            erreur.textContent =
+                "⚠️ Impossible d'effectuer le calcul. Vérifie les modules JavaScript.";
+
+        }
+
+    }
+
+
+    /* ==========================================
+       AFFICHER LES RESULTATS
+    ========================================== */
+
+    function afficherResultats(resultat) {
+
+        const surface =
+            document.getElementById("resSurface");
+
+        const volume =
+            document.getElementById("resVolume");
+
+        const puissance =
+            document.getElementById("resPuissance");
+
+        const debit =
+            document.getElementById("resDebit");
+
+        const bouches =
+            document.getElementById("resBouches");
+
+        const diametre =
+            document.getElementById("resDiametre");
+
+        const split =
+            document.getElementById("resSplit");
+
+        const gainable =
+            document.getElementById("resGainable");
+
+
+        if (surface) {
+
+            surface.textContent =
+                `${resultat.surface.toFixed(1)} m²`;
+
+        }
+
+
+        if (volume) {
+
+            volume.textContent =
+                `${resultat.volume.toFixed(1)} m³`;
+
+        }
+
+
+        if (puissance) {
+
+            puissance.textContent =
+                `${resultat.puissance.toLocaleString("fr-FR")} W`;
+
+        }
+
+
+        if (debit) {
+
+            debit.textContent =
+                `${resultat.debit.toLocaleString("fr-FR")} m³/h`;
+
+        }
+
+
+        if (bouches) {
+
+            bouches.textContent =
+                resultat.bouches;
+
+        }
+
+
+        if (diametre) {
+
+            diametre.textContent =
+                `Ø ${resultat.diametre} mm`;
+
+        }
+
+
+        if (split) {
+
+            split.textContent =
+                `Split : ${resultat.split}`;
+
+        }
+
+
+        if (gainable) {
+
+            gainable.textContent =
+                `Gainable : ${resultat.gainable}`;
+
+        }
+
+
+        const commentaires =
+            document.getElementById(
+                "commentaires"
+            );
+
+
+        if (commentaires) {
+
+            commentaires.innerHTML = `
+
+                <strong>💡 Analyse</strong>
+
+                <p>
+                    Résultat estimatif basé sur
+                    les caractéristiques renseignées.
+                </p>
+
+                <p>
+                    Le dimensionnement final doit
+                    être confirmé selon les conditions
+                    réelles du chantier.
+                </p>
+
+            `;
+
+        }
+
+    }
+
+
+    /* ==========================================
+       RETOURS
+    ========================================== */
+
+    const btnRetourAccueil =
+        document.getElementById(
+            "btnRetourAccueil"
+        );
+
+    if (btnRetourAccueil) {
+
+        btnRetourAccueil.addEventListener(
+            "click",
+            () => {
+
+                afficherPage("accueil");
+
+            }
+        );
+
+    }
+
+
+    const btnRetour2 =
+        document.getElementById("btnRetour2");
+
+    if (btnRetour2) {
+
+        btnRetour2.addEventListener(
+            "click",
+            () => {
+
+                afficherEtape(1);
+
+            }
+        );
+
+    }
+
+
+    const btnRetour3 =
+        document.getElementById("btnRetour3");
+
+    if (btnRetour3) {
+
+        btnRetour3.addEventListener(
+            "click",
+            () => {
+
+                afficherEtape(2);
+
+            }
+        );
+
+    }
+
+
+    const btnRetour4 =
+        document.getElementById("btnRetour4");
+
+    if (btnRetour4) {
+
+        btnRetour4.addEventListener(
+            "click",
+            () => {
+
+                afficherEtape(3);
+
+            }
+        );
+
+    }
+
+
+    /* ==========================================
+       NOUVELLE ETUDE DEPUIS RESULTATS
+    ========================================== */
+
+    const btnNouvelleEtude =
+        document.getElementById(
+            "btnNouvelleEtude"
+        );
+
+    if (btnNouvelleEtude) {
+
+        btnNouvelleEtude.addEventListener(
+            "click",
+            () => {
+
+                afficherEtape(1);
+
+            }
+        );
+
+    }
+
+
+    /* ==========================================
+       NAVIGATION ACCUEIL
+    ========================================== */
+
+    const navAccueil =
+        document.getElementById("navAccueil");
+
+    if (navAccueil) {
+
+        navAccueil.addEventListener(
+            "click",
+            () => {
+
+                afficherPage("accueil");
+
+            }
+        );
+
+    }
+
+
+    /* ==========================================
+       NAVIGATION ETUDE
+    ========================================== */
+
+    const navEtude =
+        document.getElementById("navEtude");
+
+    if (navEtude) {
+
+        navEtude.addEventListener(
+            "click",
+            nouvelleEtude
+        );
+
+    }
+
+
+    /* ==========================================
+       DIAGNOSTIC
+    ========================================== */
+
+    function ouvrirDiagnostic() {
+
+        afficherPage("diagnostic");
+
+    }
+
+
+    const btnAccueilDiagnostic =
+        document.getElementById(
+            "btnAccueilDiagnostic"
+        );
+
+    if (btnAccueilDiagnostic) {
+
+        btnAccueilDiagnostic.addEventListener(
+            "click",
+            ouvrirDiagnostic
+        );
+
+    }
+
+
+    const navDiagnostic =
+        document.getElementById(
+            "navDiagnostic"
+        );
+
+    if (navDiagnostic) {
+
+        navDiagnostic.addEventListener(
+            "click",
+            ouvrirDiagnostic
+        );
+
+    }
+
+
+    /* ==========================================
+       PRESSIONS
+    ========================================== */
+
+    const btnAccueilPression =
+        document.getElementById(
+            "btnAccueilPression"
+        );
+
+    if (btnAccueilPression) {
+
+        btnAccueilPression.addEventListener(
+            "click",
+            () => {
+
+                afficherPage("pression");
+
+            }
+        );
+
+    }
+
+
+    /* ==========================================
+       OUTILS
+    ========================================== */
+
+    const btnAccueilOutils =
+        document.getElementById(
+            "btnAccueilOutils"
+        );
+
+    if (btnAccueilOutils) {
+
+        btnAccueilOutils.addEventListener(
+            "click",
+            () => {
+
+                afficherPage("outils");
+
+            }
+        );
+
+    }
+
+
+    const navOutils =
+        document.getElementById(
+            "navOutils"
+        );
+
+    if (navOutils) {
+
+        navOutils.addEventListener(
+            "click",
+            () => {
+
+                afficherPage("outils");
+
+            }
+        );
+
+    }
+
+
+    /* ==========================================
+       ACADEMIE
+    ========================================== */
+
+    const navAcademie =
+        document.getElementById(
+            "navAcademie"
+        );
+
+    if (navAcademie) {
+
+        navAcademie.addEventListener(
+            "click",
+            () => {
+
+                afficherPage("academie");
+
+            }
+        );
+
+    }
+
+
+    /* ==========================================
+       ETAT INITIAL
+    ========================================== */
+
+    afficherPage("accueil");
+
+    afficherEtape(1);
+
+
+    console.log(
+        "❄️ Pro Clim V2 chargé avec succès."
+    );
+
+});
