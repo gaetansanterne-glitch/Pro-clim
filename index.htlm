@@ -1017,8 +1017,7 @@
 
 <script src="js/coefficients.js"></script>
 <script src="js/gaines.js"></script>
-<script src="js/recommandation.js"></script>
-<script src="js/etude.js"></script>
+<script src="js/Js/etude.js"></script>
 <script src="js/diagnostic.js"></script>
 <script src="js/calculs.js"></script>
 <script src="js/router.js"></script>
