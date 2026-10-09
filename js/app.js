@@ -459,13 +459,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             /*
-             * On utilise ETUDE.calculComplet
+             * On utilise ETUDE.calcul
              * si le module est disponible.
              */
 
             if (
                 typeof ETUDE !== "undefined" &&
-                typeof ETUDE.calculComplet === "function"
+                typeof ETUDE.calcul === "function"
             ) {
 
                 resultat =
