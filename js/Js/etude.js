@@ -1,193 +1,198 @@
 /* ==========================================
    PRO CLIM
-   ETUDE V2
+   MOTEUR DE CALCUL D'ETUDE CVC
+   Version 3
 ========================================== */
 
 const ETUDE = {
 
-    calcul(data){
+    // Calcul principal
+    calcul(data) {
 
-        const surface =
-            this.calculSurface(
-                data.longueur,
-                data.largeur
-            );
+        const surface = this.calculSurface(
+            data.longueur,
+            data.largeur
+        );
 
-        const volume =
-            this.calculVolume(
-                data.longueur,
-                data.largeur,
-                data.hauteur
-            );
+        const volume = this.calculVolume(
+            data.longueur,
+            data.largeur,
+            data.hauteur
+        );
 
-        const puissance =
-            this.calculPuissance(
-                data,
-                surface,
-                volume
-            );
+        const puissance = this.calculPuissance(
+            data,
+            surface
+        );
 
-        const debit =
-            this.calculDebitAir(
-                puissance
-            );
+        const debit = this.calculDebitAir(puissance);
+
+        const bouches = this.calculNombreBouches(debit);
+
+        const diametre = this.calculDiametre(debit);
 
         return {
-
             surface,
-
             volume,
-
             puissance,
-
             debit,
-
-            bouches:
-                this.calculNombreBouches(
-                    debit
-                ),
-
-            diametre:
-                this.calculDiametre(
-                    debit
-                ),
-
-            split:
-                this.calculSplit(
-                    puissance
-                ),
-
-            gainable:
-                this.calculGainable(
-                    puissance
-                )
-
+            bouches,
+            diametre,
+            split: this.calculSplit(puissance),
+            gainable: this.calculGainable(puissance)
         };
-
     },
 
-    calculSurface(longueur, largeur){
+
+    // Surface en m²
+    calculSurface(longueur, largeur) {
 
         return Number(
-            (longueur * largeur)
-            .toFixed(2)
+            (longueur * largeur).toFixed(2)
         );
-
     },
 
-    calculVolume(longueur, largeur, hauteur){
+
+    // Volume en m³
+    calculVolume(longueur, largeur, hauteur) {
 
         return Number(
-            (longueur * largeur * hauteur)
-            .toFixed(2)
+            (longueur * largeur * hauteur).toFixed(2)
         );
-
     },
 
-    calculPuissance(data, surface, volume){
 
-        let coef = 100;
+    // Estimation de puissance en watts
+    calculPuissance(data, surface) {
 
-        if(typeof COEFFICIENTS !== "undefined"){
+        // Besoin de base estimatif en W/m².
+        // Les coefficients affinent ensuite ce besoin.
+        const besoinBase = 80;
 
-            coef *=
-                COEFFICIENTS.isolation[data.isolation] || 1;
+        let coefficientGlobal = 1;
 
-            coef *=
-                COEFFICIENTS.exposition[data.exposition] || 1;
+        if (typeof COEFFICIENTS !== "undefined") {
 
-            coef *=
-                COEFFICIENTS.vitrage[data.vitrage] || 1;
+            const familles = [
+                "isolation",
+                "vitrage",
+                "exposition",
+                "toiture",
+                "etage",
+                "region"
+            ];
 
-            coef *=
-                COEFFICIENTS.toiture[data.toiture] || 1;
+            familles.forEach(famille => {
 
-            coef *=
-                COEFFICIENTS.etage[data.etage] || 1;
+                const table = COEFFICIENTS[famille];
 
-            coef *=
-                COEFFICIENTS.region[data.region] || 1;
+                if (
+                    table &&
+                    Object.prototype.hasOwnProperty.call(
+                        table,
+                        data[famille]
+                    )
+                ) {
+                    coefficientGlobal *= table[data[famille]];
+                }
 
-            coef +=
-                COEFFICIENTS.occupation[data.occupation] || 0;
-
-            coef +=
-                COEFFICIENTS.informatique[data.informatique] || 0;
-
-            coef +=
-                surface *
-                (
-                    COEFFICIENTS.eclairage[data.eclairage] || 0
-                );
-
+            });
         }
 
-        return Math.round(
-            volume * coef
-        );
+        // Besoin lié à l'enveloppe du bâtiment
+        const puissanceEnveloppe =
+            surface * besoinBase * coefficientGlobal;
 
+        // Apports internes : personnes, éclairage, informatique
+        let apportsInternes = 0;
+
+        if (typeof COEFFICIENTS !== "undefined") {
+
+            const occupation = COEFFICIENTS.occupation || {};
+            const eclairage = COEFFICIENTS.eclairage || {};
+            const informatique = COEFFICIENTS.informatique || {};
+
+            apportsInternes +=
+                Number(occupation[data.occupation]) || 0;
+
+            apportsInternes +=
+                surface *
+                (Number(eclairage[data.eclairage]) || 0);
+
+            apportsInternes +=
+                Number(informatique[data.informatique]) || 0;
+        }
+
+        const puissanceTotale =
+            puissanceEnveloppe + apportsInternes;
+
+        // Arrondi supérieur par pas de 100 W
+        return Math.ceil(puissanceTotale / 100) * 100;
     },
 
-    calculDebitAir(puissance){
+
+    // Débit indicatif pour une unité gainable.
+    // À confirmer selon la machine et ses données constructeur.
+    calculDebitAir(puissance) {
 
         return Math.round(
-            puissance / 2.8
-        );
-
+            (puissance / 1000 * 150) / 10
+        ) * 10;
     },
 
-    calculNombreBouches(debit){
+
+    // Nombre indicatif de bouches
+    // Hypothèse : environ 100 m³/h par bouche.
+    calculNombreBouches(debit) {
 
         return Math.max(
             1,
-            Math.ceil(debit / 180)
+            Math.ceil(debit / 100)
         );
-
     },
 
-    calculDiametre(debit){
 
-        if(debit <= 120) return 125;
-        if(debit <= 200) return 160;
-        if(debit <= 350) return 200;
-        if(debit <= 550) return 250;
-        if(debit <= 900) return 315;
+    // Diamètre indicatif du réseau principal
+    calculDiametre(debit) {
 
-        return 400;
+        if (
+            typeof GAINES !== "undefined" &&
+            typeof GAINES.choisirDiametre === "function"
+        ) {
+            return GAINES.choisirDiametre(debit);
+        }
 
+        if (debit <= 120) return 125;
+        if (debit <= 220) return 160;
+        if (debit <= 380) return 200;
+        if (debit <= 620) return 250;
+        if (debit <= 1000) return 315;
+        if (debit <= 1700) return 400;
+
+        return 500;
     },
 
-    calculSplit(puissance){
 
-        if(puissance <= 2500)
-            return "2.5 kW";
+    // Puissance commerciale indicative pour un split
+    calculSplit(puissance) {
 
-        if(puissance <= 3500)
-            return "3.5 kW";
+        if (puissance <= 2500) return "2,5 kW";
+        if (puissance <= 3500) return "3,5 kW";
+        if (puissance <= 5000) return "5 kW";
+        if (puissance <= 7000) return "7,1 kW";
+        if (puissance <= 10000) return "10 kW";
 
-        if(puissance <= 5000)
-            return "5 kW";
-
-        if(puissance <= 7000)
-            return "7.1 kW";
-
-        if(puissance <= 10000)
-            return "10 kW";
-
-        return "Etude spécifique";
-
+        return "Étude spécifique";
     },
 
-    calculGainable(puissance){
 
-        if(puissance <= 5000)
-            return "Moyenne Pression";
+    // Orientation indicative pour un gainable
+    calculGainable(puissance) {
 
-        if(puissance <= 10000)
-            return "Haute Pression";
+        if (puissance <= 5000) return "Moyenne pression";
+        if (puissance <= 10000) return "Haute pression";
 
         return "Dimensionnement spécifique";
-
     }
 
 };
