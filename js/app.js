@@ -469,7 +469,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ) {
 
                 resultat =
-                    ETUDE.calculComplet(
+                    ETUDE.calcul(
                         donneesEtude
                     );
 
