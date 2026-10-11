@@ -1,16 +1,17 @@
 /* ==========================================
    PRO CLIM
-   APP.JS V2
-   Gestion de l'application et navigation
+   APP.JS V3
+   Gestion application + étude multi-pièces
 ========================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* ==========================================
-       ETAT DE L'APPLICATION
-    ========================================== */
-
     let etapeActuelle = 1;
+
+
+    /* ==========================================
+       DONNÉES ÉTUDE
+    ========================================== */
 
     const donneesEtude = {
 
@@ -28,46 +29,78 @@ document.addEventListener("DOMContentLoaded", () => {
 
         occupation: 4,
         eclairage: "Standard",
-        informatique: "Moyen"
+        informatique: "Moyen",
+
+        pieces: []
 
     };
 
 
     /* ==========================================
-       ELEMENTS DES PAGES
+       PAGES
     ========================================== */
 
     const pages = {
 
-        accueil: document.getElementById("pageAccueil"),
-        etude: document.getElementById("pageEtude"),
-        diagnostic: document.getElementById("pageDiagnostic"),
-        pression: document.getElementById("pagePression"),
-        outils: document.getElementById("pageOutils"),
-        academie: document.getElementById("pageAcademie")
+        accueil:
+            document.getElementById(
+                "pageAccueil"
+            ),
+
+        etude:
+            document.getElementById(
+                "pageEtude"
+            ),
+
+        diagnostic:
+            document.getElementById(
+                "pageDiagnostic"
+            ),
+
+        pression:
+            document.getElementById(
+                "pagePression"
+            ),
+
+        outils:
+            document.getElementById(
+                "pageOutils"
+            ),
+
+        academie:
+            document.getElementById(
+                "pageAcademie"
+            )
 
     };
 
 
     /* ==========================================
-       AFFICHER UNE PAGE
+       AFFICHER PAGE
     ========================================== */
 
     function afficherPage(page) {
 
-        Object.values(pages).forEach(section => {
+        Object.values(pages)
+            .forEach(section => {
 
-            if (section) {
-                section.classList.remove("active");
-            }
+                if (section) {
 
-        });
+                    section.classList
+                        .remove("active");
+
+                }
+
+            });
+
 
         if (pages[page]) {
 
-            pages[page].classList.add("active");
+            pages[page].classList
+                .add("active");
 
         }
+
 
         window.scrollTo({
             top: 0,
@@ -78,17 +111,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       AFFICHER UNE ETAPE
+       AFFICHER ÉTAPE
     ========================================== */
 
     function afficherEtape(numero) {
 
-        etapeActuelle = numero;
+        etapeActuelle =
+            numero;
 
-        for (let i = 1; i <= 5; i++) {
+
+        for (
+            let i = 1;
+            i <= 5;
+            i++
+        ) {
 
             const etape =
-                document.getElementById(`etape${i}`);
+                document.getElementById(
+                    `etape${i}`
+                );
+
 
             if (etape) {
 
@@ -102,16 +144,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /* Progression */
-
         const label =
-            document.getElementById("etapeLabel");
+            document.getElementById(
+                "etapeLabel"
+            );
 
         const pourcentage =
-            document.getElementById("progressPercent");
+            document.getElementById(
+                "progressPercent"
+            );
 
         const barre =
-            document.getElementById("progressBar");
+            document.getElementById(
+                "progressBar"
+            );
 
 
         const pourcentages = {
@@ -158,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       DEMARRER UNE ETUDE
+       NOUVELLE ÉTUDE
     ========================================== */
 
     function nouvelleEtude() {
@@ -170,12 +216,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* ==========================================
-       BOUTON NOUVELLE ETUDE
-    ========================================== */
-
     const btnCommencer =
-        document.getElementById("btnCommencer");
+        document.getElementById(
+            "btnCommencer"
+        );
+
 
     if (btnCommencer) {
 
@@ -188,7 +233,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     const btnAccueilEtude =
-        document.getElementById("btnAccueilEtude");
+        document.getElementById(
+            "btnAccueilEtude"
+        );
+
 
     if (btnAccueilEtude) {
 
@@ -201,11 +249,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       ETAPE 1
+       ÉTAPE 1
     ========================================== */
 
     const btnEtape1 =
-        document.getElementById("btnEtape1");
+        document.getElementById(
+            "btnEtape1"
+        );
+
 
     if (btnEtape1) {
 
@@ -213,19 +264,123 @@ document.addEventListener("DOMContentLoaded", () => {
             "click",
             () => {
 
+                const type =
+                    window.PROCLIM &&
+                    window.PROCLIM
+                        .getTypeInstallation
+                        ? window.PROCLIM
+                            .getTypeInstallation()
+                        : "split";
+
+
+                /* ==============================
+                   MODE MULTI / GAINABLE
+                ============================== */
+
+                if (
+                    type === "multisplit" ||
+                    type === "gainable"
+                ) {
+
+                    if (
+                        !window.PROCLIM ||
+                        !window.PROCLIM
+                            .validerPieces()
+                    ) {
+
+                        const erreur =
+                            document.getElementById(
+                                "erreurEtape1"
+                            );
+
+
+                        if (erreur) {
+
+                            erreur.textContent =
+                                "⚠️ Merci de renseigner des dimensions valides pour chaque pièce.";
+
+                        }
+
+                        return;
+
+                    }
+
+
+                    donneesEtude.pieces =
+                        window.PROCLIM
+                            .getRooms();
+
+
+                    /* Nom des pièces */
+
+                    donneesEtude.pieces
+                        .forEach((piece, index) => {
+
+                            const champ =
+                                document.getElementById(
+                                    `piece${index + 1}Nom`
+                                );
+
+
+                            if (
+                                champ &&
+                                champ.value.trim()
+                            ) {
+
+                                piece.nom =
+                                    champ.value.trim();
+
+                            }
+
+                        });
+
+
+                    const erreur =
+                        document.getElementById(
+                            "erreurEtape1"
+                        );
+
+
+                    if (erreur) {
+
+                        erreur.textContent =
+                            "";
+
+                    }
+
+
+                    afficherEtape(2);
+
+                    return;
+
+                }
+
+
+                /* ==============================
+                   MODE SPLIT SIMPLE
+                ============================== */
+
                 const longueur =
                     parseFloat(
-                        document.getElementById("longueur").value
+                        document.getElementById(
+                            "longueur"
+                        ).value
                     );
+
 
                 const largeur =
                     parseFloat(
-                        document.getElementById("largeur").value
+                        document.getElementById(
+                            "largeur"
+                        ).value
                     );
+
 
                 const hauteur =
                     parseFloat(
-                        document.getElementById("hauteur").value
+                        document.getElementById(
+                            "hauteur"
+                        ).value
                     );
 
 
@@ -252,7 +407,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                erreur.textContent = "";
+                erreur.textContent =
+                    "";
 
 
                 donneesEtude.longueur =
@@ -265,6 +421,30 @@ document.addEventListener("DOMContentLoaded", () => {
                     hauteur;
 
 
+                donneesEtude.pieces = [
+
+                    {
+
+                        nom: "Pièce principale",
+
+                        longueur,
+                        largeur,
+                        hauteur,
+
+                        occupation:
+                            donneesEtude.occupation,
+
+                        eclairage:
+                            donneesEtude.eclairage,
+
+                        informatique:
+                            donneesEtude.informatique
+
+                    }
+
+                ];
+
+
                 afficherEtape(2);
 
             }
@@ -274,11 +454,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       ETAPE 2
+       ÉTAPE 2
     ========================================== */
 
     const btnEtape2 =
-        document.getElementById("btnEtape2");
+        document.getElementById(
+            "btnEtape2"
+        );
+
 
     if (btnEtape2) {
 
@@ -295,11 +478,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       ETAPE 3
+       ÉTAPE 3
     ========================================== */
 
     const btnEtape3 =
-        document.getElementById("btnEtape3");
+        document.getElementById(
+            "btnEtape3"
+        );
+
 
     if (btnEtape3) {
 
@@ -309,6 +495,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 afficherEtape(4);
 
+                preparerEtape4();
+
             }
         );
 
@@ -316,7 +504,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       CHOIX DES BOUTONS
+       CHOIX
     ========================================== */
 
     document
@@ -340,16 +528,16 @@ document.addEventListener("DOMContentLoaded", () => {
                         )
                         .forEach(btn => {
 
-                            btn.classList.remove(
-                                "selected"
-                            );
+                            btn.classList
+                                .remove(
+                                    "selected"
+                                );
 
                         });
 
 
-                    button.classList.add(
-                        "selected"
-                    );
+                    button.classList
+                        .add("selected");
 
 
                     if (nom) {
@@ -366,63 +554,258 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       SELECTS ETAPE 4
+       ÉTAPE 4 DYNAMIQUE
     ========================================== */
 
-    const occupation =
-        document.getElementById("occupation");
+    function preparerEtape4() {
 
-    const eclairage =
-        document.getElementById("eclairage");
+        const type =
+            window.PROCLIM &&
+            window.PROCLIM
+                .getTypeInstallation
+                ? window.PROCLIM
+                    .getTypeInstallation()
+                : "split";
 
-    const informatique =
-        document.getElementById("informatique");
+
+        if (
+            type === "multisplit" ||
+            type === "gainable"
+        ) {
+
+            creerApportsParPiece();
+
+        }
+
+    }
 
 
-    if (occupation) {
+    function creerApportsParPiece() {
 
-        occupation.addEventListener(
-            "change",
-            () => {
+        const etape4 =
+            document.getElementById(
+                "etape4"
+            );
 
-                donneesEtude.occupation =
-                    parseInt(
-                        occupation.value,
-                        10
+
+        const card =
+            etape4.querySelector(
+                ".card"
+            );
+
+
+        if (!card) return;
+
+
+        const ancienneZone =
+            card.querySelector(
+                "#zoneApportsMulti"
+            );
+
+
+        if (ancienneZone) {
+
+            ancienneZone.remove();
+
+        }
+
+
+        const zone =
+            document.createElement(
+                "div"
+            );
+
+
+        zone.id =
+            "zoneApportsMulti";
+
+
+        zone.className =
+            "choice-group";
+
+
+        zone.innerHTML = `
+
+            <label>
+                Apports par pièce
+            </label>
+
+            <p class="step-description">
+                Renseigne les apports principaux
+                de chaque local.
+            </p>
+
+        `;
+
+
+        donneesEtude.pieces
+            .forEach((piece, index) => {
+
+                const numero =
+                    index + 1;
+
+
+                const bloc =
+                    document.createElement(
+                        "div"
                     );
 
-            }
-        );
 
-    }
-
-
-    if (eclairage) {
-
-        eclairage.addEventListener(
-            "change",
-            () => {
-
-                donneesEtude.eclairage =
-                    eclairage.value;
-
-            }
-        );
-
-    }
+                bloc.className =
+                    "card";
 
 
-    if (informatique) {
+                bloc.style.marginTop =
+                    "15px";
 
-        informatique.addEventListener(
-            "change",
-            () => {
 
-                donneesEtude.informatique =
-                    informatique.value;
+                bloc.innerHTML = `
 
-            }
-        );
+                    <h3>
+                        ${piece.nom ||
+                        `Pièce ${numero}`}
+                    </h3>
+
+                    <div class="field">
+
+                        <label>
+                            Nombre d'occupants
+                        </label>
+
+                        <select
+                            id="piece${numero}Occupation">
+
+                            <option value="1">
+                                1 personne
+                            </option>
+
+                            <option value="2">
+                                2 personnes
+                            </option>
+
+                            <option value="3">
+                                3 personnes
+                            </option>
+
+                            <option value="4">
+                                4 personnes
+                            </option>
+
+                            <option value="5">
+                                5 personnes
+                            </option>
+
+                            <option value="6">
+                                6 personnes ou +
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="field">
+
+                        <label>
+                            Éclairage
+                        </label>
+
+                        <select
+                            id="piece${numero}Eclairage">
+
+                            <option value="LED">
+                                LED
+                            </option>
+
+                            <option
+                                value="Standard"
+                                selected>
+                                Standard
+                            </option>
+
+                            <option value="Halogene">
+                                Halogène
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="field">
+
+                        <label>
+                            Informatique
+                        </label>
+
+                        <select
+                            id="piece${numero}Informatique">
+
+                            <option value="Aucun">
+                                Aucun
+                            </option>
+
+                            <option value="Faible">
+                                Faible
+                            </option>
+
+                            <option
+                                value="Moyen"
+                                selected>
+                                Moyen
+                            </option>
+
+                            <option value="Important">
+                                Important
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                `;
+
+
+                zone.appendChild(
+                    bloc
+                );
+
+            });
+
+
+        const erreur =
+            document.getElementById(
+                "erreurEtape4"
+            );
+
+
+        if (erreur) {
+
+            zone.appendChild(
+                erreur
+            );
+
+        }
+
+
+        const navigation =
+            card.querySelector(
+                ".navigation-buttons"
+            );
+
+
+        if (navigation) {
+
+            card.insertBefore(
+                zone,
+                navigation
+            );
+
+        } else {
+
+            card.appendChild(
+                zone
+            );
+
+        }
 
     }
 
@@ -432,7 +815,9 @@ document.addEventListener("DOMContentLoaded", () => {
     ========================================== */
 
     const btnCalculer =
-        document.getElementById("btnCalculer");
+        document.getElementById(
+            "btnCalculer"
+        );
 
 
     if (btnCalculer) {
@@ -455,25 +840,115 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-            let resultat;
+            const type =
+                window.PROCLIM &&
+                window.PROCLIM
+                    .getTypeInstallation
+                    ? window.PROCLIM
+                        .getTypeInstallation()
+                    : "split";
 
 
-            /*
-             * On utilise ETUDE.calcul
-             * si le module est disponible.
-             */
+            /* ==============================
+               MULTI / GAINABLE
+            ============================== */
 
             if (
-                typeof ETUDE !== "undefined" &&
-                typeof ETUDE.calcul === "function"
+                type === "multisplit" ||
+                type === "gainable"
             ) {
 
-                resultat =
-                    ETUDE.calcul(
+                donneesEtude.pieces
+                    .forEach((piece, index) => {
+
+                        const numero =
+                            index + 1;
+
+
+                        const occupation =
+                            document.getElementById(
+                                `piece${numero}Occupation`
+                            );
+
+
+                        const eclairage =
+                            document.getElementById(
+                                `piece${numero}Eclairage`
+                            );
+
+
+                        const informatique =
+                            document.getElementById(
+                                `piece${numero}Informatique`
+                            );
+
+
+                        piece.occupation =
+                            occupation
+                                ? parseInt(
+                                    occupation.value,
+                                    10
+                                )
+                                : 1;
+
+
+                        piece.eclairage =
+                            eclairage
+                                ? eclairage.value
+                                : "Standard";
+
+
+                        piece.informatique =
+                            informatique
+                                ? informatique.value
+                                : "Aucun";
+
+                    });
+
+
+                if (
+                    typeof ETUDE ===
+                    "undefined" ||
+                    typeof ETUDE.calculMulti !==
+                    "function"
+                ) {
+
+                    throw new Error(
+                        "Le moteur multi-pièces n'est pas chargé."
+                    );
+
+                }
+
+
+                const resultat =
+                    ETUDE.calculMulti(
                         donneesEtude
                     );
 
-            } else {
+
+                afficherResultatsMulti(
+                    resultat,
+                    type
+                );
+
+
+                afficherEtape(5);
+
+                return;
+
+            }
+
+
+            /* ==============================
+               SPLIT SIMPLE
+            ============================== */
+
+            if (
+                typeof ETUDE ===
+                "undefined" ||
+                typeof ETUDE.calcul !==
+                "function"
+            ) {
 
                 throw new Error(
                     "Le module ETUDE n'est pas chargé."
@@ -482,7 +957,27 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
-            afficherResultats(resultat);
+            const resultat =
+                ETUDE.calcul({
+
+                    ...donneesEtude,
+
+                    occupation:
+                        donneesEtude.occupation,
+
+                    eclairage:
+                        donneesEtude.eclairage,
+
+                    informatique:
+                        donneesEtude.informatique
+
+                });
+
+
+            afficherResultats(
+                resultat
+            );
+
 
             afficherEtape(5);
 
@@ -492,8 +987,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             console.error(error);
 
-            erreur.textContent =
-                "⚠️ Impossible d'effectuer le calcul. Vérifie les modules JavaScript.";
+
+            if (erreur) {
+
+                erreur.textContent =
+                    "⚠️ Impossible d'effectuer le calcul. Vérifie les modules JavaScript.";
+
+            }
 
         }
 
@@ -501,34 +1001,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       AFFICHER LES RESULTATS
+       RÉSULTAT SIMPLE
     ========================================== */
 
     function afficherResultats(resultat) {
 
         const surface =
-            document.getElementById("resSurface");
+            document.getElementById(
+                "resSurface"
+            );
 
         const volume =
-            document.getElementById("resVolume");
+            document.getElementById(
+                "resVolume"
+            );
 
         const puissance =
-            document.getElementById("resPuissance");
+            document.getElementById(
+                "resPuissance"
+            );
 
         const debit =
-            document.getElementById("resDebit");
+            document.getElementById(
+                "resDebit"
+            );
 
         const bouches =
-            document.getElementById("resBouches");
+            document.getElementById(
+                "resBouches"
+            );
 
         const diametre =
-            document.getElementById("resDiametre");
+            document.getElementById(
+                "resDiametre"
+            );
 
         const split =
-            document.getElementById("resSplit");
+            document.getElementById(
+                "resSplit"
+            );
 
         const gainable =
-            document.getElementById("resGainable");
+            document.getElementById(
+                "resGainable"
+            );
 
 
         if (surface) {
@@ -595,6 +1111,305 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
+        afficherCommentaire(
+            `
+            <strong>💡 Analyse</strong>
+
+            <p>
+                Résultat estimatif basé sur
+                les caractéristiques renseignées.
+            </p>
+
+            <p>
+                Le dimensionnement final doit
+                être confirmé selon les conditions
+                réelles du chantier et les données
+                constructeur.
+            </p>
+            `
+        );
+
+    }
+
+
+    /* ==========================================
+       RÉSULTAT MULTI-PIÈCES
+    ========================================== */
+
+    function afficherResultatsMulti(
+        resultat,
+        type
+    ) {
+
+        const surface =
+            document.getElementById(
+                "resSurface"
+            );
+
+        const volume =
+            document.getElementById(
+                "resVolume"
+            );
+
+        const puissance =
+            document.getElementById(
+                "resPuissance"
+            );
+
+        const debit =
+            document.getElementById(
+                "resDebit"
+            );
+
+        const bouches =
+            document.getElementById(
+                "resBouches"
+            );
+
+        const diametre =
+            document.getElementById(
+                "resDiametre"
+            );
+
+        const split =
+            document.getElementById(
+                "resSplit"
+            );
+
+        const gainable =
+            document.getElementById(
+                "resGainable"
+            );
+
+
+        if (surface) {
+
+            surface.textContent =
+                `${resultat.surfaceTotale.toFixed(1)} m²`;
+
+        }
+
+
+        if (volume) {
+
+            volume.textContent =
+                `${resultat.volumeTotal.toFixed(1)} m³`;
+
+        }
+
+
+        if (puissance) {
+
+            puissance.textContent =
+                `${resultat.puissanceTotale.toLocaleString("fr-FR")} W`;
+
+        }
+
+
+        if (type === "gainable") {
+
+            if (debit) {
+
+                debit.textContent =
+                    `${resultat.debitTotal.toLocaleString("fr-FR")} m³/h`;
+
+            }
+
+
+            if (bouches) {
+
+                bouches.textContent =
+                    resultat.bouchesTotal;
+
+            }
+
+
+            if (diametre) {
+
+                const diametreTotal =
+                    ETUDE.calculDiametre(
+                        resultat.debitTotal
+                    );
+
+
+                diametre.textContent =
+                    `Ø ${diametreTotal} mm`;
+
+            }
+
+
+            if (gainable) {
+
+                gainable.textContent =
+                    `Gainable : étude globale`;
+
+            }
+
+        }
+
+
+        if (type === "multisplit") {
+
+            if (debit) {
+
+                debit.textContent =
+                    "—";
+
+            }
+
+
+            if (bouches) {
+
+                bouches.textContent =
+                    "—";
+
+            }
+
+
+            if (diametre) {
+
+                diametre.textContent =
+                    "—";
+
+            }
+
+
+            if (split) {
+
+                split.textContent =
+                    `Multi-split : ${resultat.pieces.length} unités intérieures`;
+
+            }
+
+        }
+
+
+        let html = `
+
+            <strong>📊 Détail de l'étude</strong>
+
+            <p>
+                ${resultat.pieces.length}
+                pièce(s) étudiée(s)
+            </p>
+
+        `;
+
+
+        resultat.pieces
+            .forEach((piece, index) => {
+
+                html += `
+
+                    <div
+                        style="
+                            margin-top:12px;
+                            padding:12px;
+                            border:1px solid #ddd;
+                            border-radius:10px;
+                        "
+                    >
+
+                        <strong>
+                            ${piece.nom ||
+                            `Pièce ${index + 1}`}
+                        </strong>
+
+                        <br>
+
+                        Surface :
+                        ${piece.surface.toFixed(1)} m²
+
+                        <br>
+
+                        Volume :
+                        ${piece.volume.toFixed(1)} m³
+
+                        <br>
+
+                        Besoin estimé :
+                        <strong>
+                            ${piece.puissance.toLocaleString("fr-FR")} W
+                        </strong>
+
+                        <br>
+
+                        ${
+                            type === "multisplit"
+                            ? `Unité intérieure indicative :
+                               <strong>${piece.split}</strong>`
+                            : `Débit indicatif :
+                               <strong>${piece.debit.toLocaleString("fr-FR")} m³/h</strong>`
+                        }
+
+                    </div>
+
+                `;
+
+            });
+
+
+        if (type === "multisplit") {
+
+            html += `
+
+                <p style="margin-top:15px;">
+
+                    🔗 <strong>Synthèse multi-split</strong><br>
+
+                    Puissance intérieure cumulée :
+                    <strong>
+                        ${resultat.puissanceTotale.toLocaleString("fr-FR")} W
+                    </strong>
+
+                </p>
+
+                <p>
+                    ⚠️ Le choix du groupe extérieur
+                    et la combinaison des unités doivent
+                    être vérifiés dans le tableau
+                    constructeur.
+                </p>
+
+            `;
+
+        }
+
+
+        if (type === "gainable") {
+
+            html += `
+
+                <p style="margin-top:15px;">
+
+                    🌬️ Le débit et le réseau sont
+                    indicatifs. Le dimensionnement final
+                    doit être vérifié avec la machine,
+                    le réseau et les pertes de charge
+                    réelles.
+
+                </p>
+
+            `;
+
+        }
+
+
+        afficherCommentaire(
+            html
+        );
+
+    }
+
+
+    /* ==========================================
+       COMMENTAIRES
+    ========================================== */
+
+    function afficherCommentaire(
+        contenu
+    ) {
+
         const commentaires =
             document.getElementById(
                 "commentaires"
@@ -603,22 +1418,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (commentaires) {
 
-            commentaires.innerHTML = `
-
-                <strong>💡 Analyse</strong>
-
-                <p>
-                    Résultat estimatif basé sur
-                    les caractéristiques renseignées.
-                </p>
-
-                <p>
-                    Le dimensionnement final doit
-                    être confirmé selon les conditions
-                    réelles du chantier.
-                </p>
-
-            `;
+            commentaires.innerHTML =
+                contenu;
 
         }
 
@@ -634,13 +1435,16 @@ document.addEventListener("DOMContentLoaded", () => {
             "btnRetourAccueil"
         );
 
+
     if (btnRetourAccueil) {
 
         btnRetourAccueil.addEventListener(
             "click",
             () => {
 
-                afficherPage("accueil");
+                afficherPage(
+                    "accueil"
+                );
 
             }
         );
@@ -649,7 +1453,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     const btnRetour2 =
-        document.getElementById("btnRetour2");
+        document.getElementById(
+            "btnRetour2"
+        );
+
 
     if (btnRetour2) {
 
@@ -666,7 +1473,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     const btnRetour3 =
-        document.getElementById("btnRetour3");
+        document.getElementById(
+            "btnRetour3"
+        );
+
 
     if (btnRetour3) {
 
@@ -683,7 +1493,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     const btnRetour4 =
-        document.getElementById("btnRetour4");
+        document.getElementById(
+            "btnRetour4"
+        );
+
 
     if (btnRetour4) {
 
@@ -700,13 +1513,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       NOUVELLE ETUDE DEPUIS RESULTATS
+       NOUVELLE ÉTUDE
     ========================================== */
 
     const btnNouvelleEtude =
         document.getElementById(
             "btnNouvelleEtude"
         );
+
 
     if (btnNouvelleEtude) {
 
@@ -723,11 +1537,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       NAVIGATION ACCUEIL
+       NAVIGATION
     ========================================== */
 
     const navAccueil =
-        document.getElementById("navAccueil");
+        document.getElementById(
+            "navAccueil"
+        );
+
 
     if (navAccueil) {
 
@@ -735,7 +1552,9 @@ document.addEventListener("DOMContentLoaded", () => {
             "click",
             () => {
 
-                afficherPage("accueil");
+                afficherPage(
+                    "accueil"
+                );
 
             }
         );
@@ -743,12 +1562,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* ==========================================
-       NAVIGATION ETUDE
-    ========================================== */
-
     const navEtude =
-        document.getElementById("navEtude");
+        document.getElementById(
+            "navEtude"
+        );
+
 
     if (navEtude) {
 
@@ -766,7 +1584,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function ouvrirDiagnostic() {
 
-        afficherPage("diagnostic");
+        afficherPage(
+            "diagnostic"
+        );
 
     }
 
@@ -775,6 +1595,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById(
             "btnAccueilDiagnostic"
         );
+
 
     if (btnAccueilDiagnostic) {
 
@@ -791,6 +1612,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "navDiagnostic"
         );
 
+
     if (navDiagnostic) {
 
         navDiagnostic.addEventListener(
@@ -802,7 +1624,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       PRESSIONS
+       PRESSION
     ========================================== */
 
     const btnAccueilPression =
@@ -810,13 +1632,16 @@ document.addEventListener("DOMContentLoaded", () => {
             "btnAccueilPression"
         );
 
+
     if (btnAccueilPression) {
 
         btnAccueilPression.addEventListener(
             "click",
             () => {
 
-                afficherPage("pression");
+                afficherPage(
+                    "pression"
+                );
 
             }
         );
@@ -833,13 +1658,16 @@ document.addEventListener("DOMContentLoaded", () => {
             "btnAccueilOutils"
         );
 
+
     if (btnAccueilOutils) {
 
         btnAccueilOutils.addEventListener(
             "click",
             () => {
 
-                afficherPage("outils");
+                afficherPage(
+                    "outils"
+                );
 
             }
         );
@@ -852,13 +1680,16 @@ document.addEventListener("DOMContentLoaded", () => {
             "navOutils"
         );
 
+
     if (navOutils) {
 
         navOutils.addEventListener(
             "click",
             () => {
 
-                afficherPage("outils");
+                afficherPage(
+                    "outils"
+                );
 
             }
         );
@@ -875,13 +1706,16 @@ document.addEventListener("DOMContentLoaded", () => {
             "navAcademie"
         );
 
+
     if (navAcademie) {
 
         navAcademie.addEventListener(
             "click",
             () => {
 
-                afficherPage("academie");
+                afficherPage(
+                    "academie"
+                );
 
             }
         );
@@ -890,16 +1724,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       ETAT INITIAL
+       INITIALISATION
     ========================================== */
 
-    afficherPage("accueil");
+    afficherPage(
+        "accueil"
+    );
 
     afficherEtape(1);
 
 
     console.log(
-        "❄️ Pro Clim V2 chargé avec succès."
+        "❄️ Pro Clim V3 chargé avec succès."
     );
 
 });
