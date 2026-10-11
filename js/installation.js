@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const largeur =
                     document.getElementById(
-                        `piece${iLargeur}`
+                        `piece${i}Largeur}`
                     );
 
                 const hauteur =
