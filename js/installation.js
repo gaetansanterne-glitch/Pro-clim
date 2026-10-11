@@ -1,17 +1,27 @@
 /* ==========================================
    PRO CLIM — CHOIX DE L'INSTALLATION
    Version Multi-split / Gainable
+   Correction : suppression des champs
+   Longueur / Largeur / Hauteur fantômes
 ========================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
     let typeInstallation = "split";
 
-    const etape1 = document.getElementById("etape1");
-    const boutonContinuer = document.getElementById("btnEtape1");
+    const etape1 =
+        document.getElementById("etape1");
+
+    const boutonContinuer =
+        document.getElementById("btnEtape1");
+
 
     if (!etape1 || !boutonContinuer) {
-        console.error("Pro Clim : étape 1 introuvable.");
+
+        console.error(
+            "Pro Clim : étape 1 introuvable."
+        );
+
         return;
     }
 
@@ -20,7 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
        CHOIX DU TYPE D'INSTALLATION
     ========================================== */
 
-    const choix = document.createElement("div");
+    const choix =
+        document.createElement("div");
 
     choix.className = "choice-group";
     choix.id = "choixInstallation";
@@ -34,21 +45,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
         <div class="choice-grid">
 
-            <button type="button"
-                    class="choice selected"
-                    data-installation="split">
+            <button
+                type="button"
+                class="choice selected"
+                data-installation="split">
                 ❄️ Split mural
             </button>
 
-            <button type="button"
-                    class="choice"
-                    data-installation="multisplit">
-                ❄️ Multi-split
+            <button
+                type="button"
+                class="choice"
+                data-installation="multisplit">
+                🔗 Multi-split
             </button>
 
-            <button type="button"
-                    class="choice"
-                    data-installation="gainable">
+            <button
+                type="button"
+                class="choice"
+                data-installation="gainable">
                 🌬️ Gainable
             </button>
 
@@ -59,10 +73,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const premierChamp =
         etape1.querySelector(".field");
 
+
     if (premierChamp) {
+
         premierChamp.before(choix);
+
     } else {
+
         boutonContinuer.before(choix);
+
     }
 
 
@@ -88,16 +107,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <select id="nombrePieces">
 
-                <option value="1">1 pièce</option>
-                <option value="2">2 pièces</option>
-                <option value="3">3 pièces</option>
-                <option value="4">4 pièces</option>
-                <option value="5">5 pièces</option>
+                <option value="1">
+                    1 pièce
+                </option>
+
+                <option value="2">
+                    2 pièces
+                </option>
+
+                <option value="3">
+                    3 pièces
+                </option>
+
+                <option value="4">
+                    4 pièces
+                </option>
+
+                <option value="5">
+                    5 pièces
+                </option>
 
             </select>
 
         </div>
     `;
+
 
     choix.after(nombrePiecesContainer);
 
@@ -115,24 +149,15 @@ document.addEventListener("DOMContentLoaded", () => {
     piecesContainer.style.display =
         "none";
 
-    nombrePiecesContainer.after(piecesContainer);
+
+    nombrePiecesContainer.after(
+        piecesContainer
+    );
 
 
     /* ==========================================
        CHAMPS CLASSIQUES D'ORIGINE
-       Longueur / Largeur / Hauteur
     ========================================== */
-
-    const champsClassiques =
-        etape1.querySelectorAll(".field");
-
-
-    /*
-     * Les champs classiques correspondent aux
-     * champs déjà présents dans index.html.
-     *
-     * On les identifie grâce à leurs inputs.
-     */
 
     const longueurOriginale =
         document.getElementById("longueur");
@@ -144,29 +169,81 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("hauteur");
 
 
-    let blocLongueur = null;
-    let blocLargeur = null;
-    let blocHauteur = null;
+    /*
+     * On récupère le bloc complet contenant
+     * chaque ancien champ.
+     *
+     * Si .field existe : on le prend.
+     * Sinon : on remonte au parent direct.
+     */
 
+    function trouverBlocChamp(element) {
 
-    if (longueurOriginale) {
-        blocLongueur =
-            longueurOriginale.closest(".field");
+        if (!element) {
+            return null;
+        }
+
+        const bloc =
+            element.closest(".field");
+
+        if (bloc) {
+            return bloc;
+        }
+
+        return element.parentElement;
     }
 
-    if (largeurOriginale) {
-        blocLargeur =
-            largeurOriginale.closest(".field");
+
+    const blocLongueur =
+        trouverBlocChamp(longueurOriginale);
+
+    const blocLargeur =
+        trouverBlocChamp(largeurOriginale);
+
+    const blocHauteur =
+        trouverBlocChamp(hauteurOriginale);
+
+
+    /* ==========================================
+       AFFICHER / MASQUER LES ANCIENS CHAMPS
+    ========================================== */
+
+    function masquerChampsClassiques() {
+
+        if (blocLongueur) {
+            blocLongueur.style.display = "none";
+        }
+
+        if (blocLargeur) {
+            blocLargeur.style.display = "none";
+        }
+
+        if (blocHauteur) {
+            blocHauteur.style.display = "none";
+        }
+
     }
 
-    if (hauteurOriginale) {
-        blocHauteur =
-            hauteurOriginale.closest(".field");
+
+    function afficherChampsClassiques() {
+
+        if (blocLongueur) {
+            blocLongueur.style.display = "";
+        }
+
+        if (blocLargeur) {
+            blocLargeur.style.display = "";
+        }
+
+        if (blocHauteur) {
+            blocHauteur.style.display = "";
+        }
+
     }
 
 
     /* ==========================================
-       AFFICHER / MASQUER LES CHAMPS
+       AFFICHAGE SELON INSTALLATION
     ========================================== */
 
     function adapterAffichage() {
@@ -179,21 +256,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (modeMulti) {
 
             /*
-             * On cache les anciens champs
-             * Longueur / Largeur / Hauteur.
+             * Multi-split / Gainable :
+             * les anciens champs génériques
+             * doivent disparaître.
              */
 
-            if (blocLongueur) {
-                blocLongueur.style.display = "none";
-            }
-
-            if (blocLargeur) {
-                blocLargeur.style.display = "none";
-            }
-
-            if (blocHauteur) {
-                blocHauteur.style.display = "none";
-            }
+            masquerChampsClassiques();
 
 
             nombrePiecesContainer.style.display =
@@ -205,24 +273,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             afficherPieces();
 
+
         } else {
 
             /*
              * Split mural :
-             * on remet les champs classiques.
+             * retour aux champs classiques.
              */
 
-            if (blocLongueur) {
-                blocLongueur.style.display = "";
-            }
-
-            if (blocLargeur) {
-                blocLargeur.style.display = "";
-            }
-
-            if (blocHauteur) {
-                blocHauteur.style.display = "";
-            }
+            afficherChampsClassiques();
 
 
             nombrePiecesContainer.style.display =
@@ -232,6 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 "none";
 
             piecesContainer.innerHTML = "";
+
         }
 
     }
@@ -246,11 +306,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const select =
             document.getElementById("nombrePieces");
 
-        if (!select) return;
+
+        if (!select) {
+            return;
+        }
 
 
         const nombre =
-            parseInt(select.value, 10);
+            parseInt(
+                select.value,
+                10
+            );
 
 
         /*
@@ -258,6 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
          */
 
         const anciennesPieces = [];
+
 
         for (let i = 1; i <= 5; i++) {
 
@@ -290,10 +357,27 @@ document.addEventListener("DOMContentLoaded", () => {
             ) {
 
                 anciennesPieces.push({
-                    nom: nom ? nom.value : "",
-                    longueur: longueur ? longueur.value : "",
-                    largeur: largeur ? largeur.value : "",
-                    hauteur: hauteur ? hauteur.value : ""
+
+                    nom:
+                        nom
+                            ? nom.value
+                            : "",
+
+                    longueur:
+                        longueur
+                            ? longueur.value
+                            : "",
+
+                    largeur:
+                        largeur
+                            ? largeur.value
+                            : "",
+
+                    hauteur:
+                        hauteur
+                            ? hauteur.value
+                            : ""
+
                 });
 
             }
@@ -305,7 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         /* ==========================================
-           CREATION DES CARTES
+           CREATION DES CARTES PIECES
         ========================================== */
 
         for (let i = 1; i <= nombre; i++) {
@@ -322,9 +406,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             carte.innerHTML = `
+
                 <label>
-                    🏠 Pièce ${i}
+                    📐 Pièce ${i}
                 </label>
+
 
                 <div class="field">
 
@@ -345,7 +431,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="field">
 
                     <label for="piece${i}Longueur">
-                        Longueur (m)
+                        Longueur
                     </label>
 
                     <input
@@ -358,13 +444,15 @@ document.addEventListener("DOMContentLoaded", () => {
                         value="${ancienne.longueur || ""}"
                     >
 
+                    <span>m</span>
+
                 </div>
 
 
                 <div class="field">
 
                     <label for="piece${i}Largeur">
-                        Largeur (m)
+                        Largeur
                     </label>
 
                     <input
@@ -377,13 +465,15 @@ document.addEventListener("DOMContentLoaded", () => {
                         value="${ancienne.largeur || ""}"
                     >
 
+                    <span>m</span>
+
                 </div>
 
 
                 <div class="field">
 
                     <label for="piece${i}Hauteur">
-                        Hauteur sous plafond (m)
+                        Hauteur sous plafond
                     </label>
 
                     <input
@@ -396,7 +486,10 @@ document.addEventListener("DOMContentLoaded", () => {
                         value="${ancienne.hauteur || ""}"
                     >
 
+                    <span>m</span>
+
                 </div>
+
             `;
 
 
@@ -412,7 +505,9 @@ document.addEventListener("DOMContentLoaded", () => {
     ========================================== */
 
     const nombrePieces =
-        document.getElementById("nombrePieces");
+        document.getElementById(
+            "nombrePieces"
+        );
 
 
     if (nombrePieces) {
@@ -430,7 +525,9 @@ document.addEventListener("DOMContentLoaded", () => {
     ========================================== */
 
     choix
-        .querySelectorAll("[data-installation]")
+        .querySelectorAll(
+            "[data-installation]"
+        )
         .forEach(bouton => {
 
             bouton.addEventListener(
@@ -474,12 +571,22 @@ document.addEventListener("DOMContentLoaded", () => {
     function getRooms() {
 
         const select =
-            document.getElementById("nombrePieces");
+            document.getElementById(
+                "nombrePieces"
+            );
 
-        if (!select) return [];
+
+        if (!select) {
+            return [];
+        }
+
 
         const nombre =
-            parseInt(select.value, 10);
+            parseInt(
+                select.value,
+                10
+            );
+
 
         const pieces = [];
 
@@ -512,24 +619,34 @@ document.addEventListener("DOMContentLoaded", () => {
                 !largeur ||
                 !hauteur
             ) {
+
                 continue;
+
             }
 
 
             pieces.push({
 
-                nom: nom
-                    ? nom.value.trim()
-                    : `Pièce ${i}`,
+                nom:
+                    nom &&
+                    nom.value.trim()
+                        ? nom.value.trim()
+                        : `Pièce ${i}`,
 
                 longueur:
-                    parseFloat(longueur.value),
+                    parseFloat(
+                        longueur.value
+                    ),
 
                 largeur:
-                    parseFloat(largeur.value),
+                    parseFloat(
+                        largeur.value
+                    ),
 
                 hauteur:
-                    parseFloat(hauteur.value)
+                    parseFloat(
+                        hauteur.value
+                    )
 
             });
 
@@ -556,15 +673,22 @@ document.addEventListener("DOMContentLoaded", () => {
         ) {
 
             return {
+
                 valide: false,
+
                 message:
                     "⚠️ Renseigne au moins une pièce."
+
             };
 
         }
 
 
-        for (let i = 0; i < pieces.length; i++) {
+        for (
+            let i = 0;
+            i < pieces.length;
+            i++
+        ) {
 
             const piece =
                 pieces[i];
@@ -580,9 +704,12 @@ document.addEventListener("DOMContentLoaded", () => {
             ) {
 
                 return {
+
                     valide: false,
+
                     message:
                         `⚠️ Vérifie les dimensions de la pièce ${i + 1}.`
+
                 };
 
             }
@@ -591,8 +718,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         return {
+
             valide: true,
+
             pieces
+
         };
 
     }
@@ -605,19 +735,29 @@ document.addEventListener("DOMContentLoaded", () => {
     function adapterResultats() {
 
         const split =
-            document.getElementById("resSplit");
+            document.getElementById(
+                "resSplit"
+            );
 
         const gainable =
-            document.getElementById("resGainable");
+            document.getElementById(
+                "resGainable"
+            );
 
         const debit =
-            document.getElementById("resDebit");
+            document.getElementById(
+                "resDebit"
+            );
 
         const bouches =
-            document.getElementById("resBouches");
+            document.getElementById(
+                "resBouches"
+            );
 
         const diametre =
-            document.getElementById("resDiametre");
+            document.getElementById(
+                "resDiametre"
+            );
 
 
         if (
@@ -627,65 +767,105 @@ document.addEventListener("DOMContentLoaded", () => {
             !bouches ||
             !diametre
         ) {
+
             return;
+
         }
 
 
         const ligneDebit =
-            debit.closest(".result-item");
+            debit.closest(
+                ".result-item"
+            );
 
         const ligneBouches =
-            bouches.closest(".result-item");
+            bouches.closest(
+                ".result-item"
+            );
 
         const ligneDiametre =
-            diametre.closest(".result-item");
+            diametre.closest(
+                ".result-item"
+            );
 
 
-        if (typeInstallation === "split") {
+        if (
+            typeInstallation === "split"
+        ) {
 
-            split.style.display = "block";
-            gainable.style.display = "none";
+            split.style.display =
+                "block";
 
-            if (ligneDebit)
-                ligneDebit.style.display = "none";
+            gainable.style.display =
+                "none";
 
-            if (ligneBouches)
-                ligneBouches.style.display = "none";
 
-            if (ligneDiametre)
-                ligneDiametre.style.display = "none";
+            if (ligneDebit) {
+                ligneDebit.style.display =
+                    "none";
+            }
+
+            if (ligneBouches) {
+                ligneBouches.style.display =
+                    "none";
+            }
+
+            if (ligneDiametre) {
+                ligneDiametre.style.display =
+                    "none";
+            }
 
 
         } else if (
             typeInstallation === "multisplit"
         ) {
 
-            split.style.display = "block";
-            gainable.style.display = "none";
+            split.style.display =
+                "block";
 
-            if (ligneDebit)
-                ligneDebit.style.display = "none";
+            gainable.style.display =
+                "none";
 
-            if (ligneBouches)
-                ligneBouches.style.display = "none";
 
-            if (ligneDiametre)
-                ligneDiametre.style.display = "none";
+            if (ligneDebit) {
+                ligneDebit.style.display =
+                    "none";
+            }
+
+            if (ligneBouches) {
+                ligneBouches.style.display =
+                    "none";
+            }
+
+            if (ligneDiametre) {
+                ligneDiametre.style.display =
+                    "none";
+            }
 
 
         } else {
 
-            split.style.display = "none";
-            gainable.style.display = "block";
+            split.style.display =
+                "none";
 
-            if (ligneDebit)
-                ligneDebit.style.display = "";
+            gainable.style.display =
+                "block";
 
-            if (ligneBouches)
-                ligneBouches.style.display = "";
 
-            if (ligneDiametre)
-                ligneDiametre.style.display = "";
+            if (ligneDebit) {
+                ligneDebit.style.display =
+                    "";
+            }
+
+            if (ligneBouches) {
+                ligneBouches.style.display =
+                    "";
+            }
+
+            if (ligneDiametre) {
+                ligneDiametre.style.display =
+                    "";
+            }
 
         }
 
@@ -699,8 +879,11 @@ document.addEventListener("DOMContentLoaded", () => {
     window.PROCLIM = {
 
         getTypeInstallation() {
+
             return typeInstallation;
+
         },
+
 
         getNombrePieces() {
 
@@ -709,11 +892,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     "nombrePieces"
                 );
 
+
             return select
-                ? parseInt(select.value, 10)
+                ? parseInt(
+                    select.value,
+                    10
+                )
                 : 1;
 
         },
+
 
         getRooms,
 
@@ -729,7 +917,9 @@ document.addEventListener("DOMContentLoaded", () => {
     ========================================== */
 
     const boutonCalculer =
-        document.getElementById("btnCalculer");
+        document.getElementById(
+            "btnCalculer"
+        );
 
 
     if (boutonCalculer) {
