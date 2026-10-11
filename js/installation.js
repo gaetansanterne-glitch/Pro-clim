@@ -1,7 +1,7 @@
 /* ==========================================
    PRO CLIM — CHOIX DE L'INSTALLATION
    Multi-split / Gainable
-   Correction complète des champs fantômes
+   Version correction définitive étape 1
 ========================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -45,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     choix.innerHTML = `
-
         <label>Type d'installation</label>
 
         <p class="step-description">
@@ -103,135 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       CHAMPS CLASSIQUES D'ORIGINE
-    ========================================== */
-
-    const longueurOriginale =
-        document.getElementById("longueur");
-
-    const largeurOriginale =
-        document.getElementById("largeur");
-
-    const hauteurOriginale =
-        document.getElementById("hauteur");
-
-
-    /*
-     * IMPORTANT :
-     * On récupère le bloc .field contenant
-     * chacun des anciens champs.
-     */
-
-    function trouverBlocChamp(element) {
-
-        if (!element) {
-            return null;
-        }
-
-
-        const bloc =
-            element.closest(".field");
-
-
-        if (bloc) {
-            return bloc;
-        }
-
-
-        return element.parentElement;
-
-    }
-
-
-    const blocLongueur =
-        trouverBlocChamp(
-            longueurOriginale
-        );
-
-    const blocLargeur =
-        trouverBlocChamp(
-            largeurOriginale
-        );
-
-    const blocHauteur =
-        trouverBlocChamp(
-            hauteurOriginale
-        );
-
-
-    /* ==========================================
-       MASQUER LES ANCIENS CHAMPS
-    ========================================== */
-
-    function masquerChampsClassiques() {
-
-        [
-            blocLongueur,
-            blocLargeur,
-            blocHauteur
-
-        ].forEach(bloc => {
-
-            if (!bloc) {
-                return;
-            }
-
-
-            /*
-             * hidden = sécurité supplémentaire
-             */
-
-            bloc.hidden = true;
-
-
-            /*
-             * !important = passe au-dessus
-             * des règles CSS existantes
-             */
-
-            bloc.style.setProperty(
-                "display",
-                "none",
-                "important"
-            );
-
-        });
-
-    }
-
-
-    /* ==========================================
-       AFFICHER LES ANCIENS CHAMPS
-    ========================================== */
-
-    function afficherChampsClassiques() {
-
-        [
-            blocLongueur,
-            blocLargeur,
-            blocHauteur
-
-        ].forEach(bloc => {
-
-            if (!bloc) {
-                return;
-            }
-
-
-            bloc.hidden = false;
-
-
-            bloc.style.removeProperty(
-                "display"
-            );
-
-        });
-
-    }
-
-
-    /* ==========================================
-       NOMBRE DE PIECES
+       CONTENEUR NOMBRE DE PIECES
     ========================================== */
 
     const nombrePiecesContainer =
@@ -247,13 +118,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     nombrePiecesContainer.innerHTML = `
-
         <div class="field">
 
             <label for="nombrePieces">
                 Nombre de pièces
             </label>
-
 
             <select id="nombrePieces">
 
@@ -280,7 +149,6 @@ document.addEventListener("DOMContentLoaded", () => {
             </select>
 
         </div>
-
     `;
 
 
@@ -290,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       CONTENEUR PIECES
+       CONTENEUR DES PIECES
     ========================================== */
 
     const piecesContainer =
@@ -311,7 +179,128 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       CREER LES PIECES
+       CHAMPS D'ORIGINE DE L'ETAPE 1
+    ========================================== */
+
+    /*
+     * On mémorise les .field qui existaient
+     * AVANT la création de nos pièces.
+     *
+     * Ce sont les anciens champs :
+     * Longueur
+     * Largeur
+     * Hauteur
+     */
+
+    const champsOriginaux =
+        Array.from(
+            etape1.querySelectorAll(".field")
+        );
+
+
+    /* ==========================================
+       MASQUER LES CHAMPS ORIGINAUX
+    ========================================== */
+
+    function masquerChampsOriginaux() {
+
+        champsOriginaux.forEach(bloc => {
+
+            /*
+             * Ne jamais masquer les éléments
+             * créés dynamiquement par Pro Clim.
+             */
+
+            if (
+                bloc.closest(
+                    "#choixInstallation"
+                )
+            ) {
+                return;
+            }
+
+
+            if (
+                bloc.closest(
+                    "#nombrePiecesContainer"
+                )
+            ) {
+                return;
+            }
+
+
+            if (
+                bloc.closest(
+                    "#piecesContainer"
+                )
+            ) {
+                return;
+            }
+
+
+            bloc.hidden = true;
+
+
+            bloc.style.setProperty(
+                "display",
+                "none",
+                "important"
+            );
+
+        });
+
+    }
+
+
+    /* ==========================================
+       AFFICHER LES CHAMPS ORIGINAUX
+    ========================================== */
+
+    function afficherChampsOriginaux() {
+
+        champsOriginaux.forEach(bloc => {
+
+            if (
+                bloc.closest(
+                    "#choixInstallation"
+                )
+            ) {
+                return;
+            }
+
+
+            if (
+                bloc.closest(
+                    "#nombrePiecesContainer"
+                )
+            ) {
+                return;
+            }
+
+
+            if (
+                bloc.closest(
+                    "#piecesContainer"
+                )
+            ) {
+                return;
+            }
+
+
+            bloc.hidden = false;
+
+
+            bloc.style.removeProperty(
+                "display"
+            );
+
+        });
+
+    }
+
+
+    /* ==========================================
+       CREATION DES PIECES
     ========================================== */
 
     function afficherPieces() {
@@ -335,13 +324,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         /*
-         * Sauvegarde des valeurs déjà saisies
+         * Sauvegarde des valeurs existantes
          */
 
         const anciennesPieces = [];
 
 
-        for (let i = 1; i <= 5; i++) {
+        for (
+            let i = 1;
+            i <= 5;
+            i++
+        ) {
 
             const nom =
                 document.getElementById(
@@ -400,16 +393,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /*
-         * Nettoyage
-         */
-
         piecesContainer.innerHTML =
             "";
 
 
         /* ==========================================
-           CREATION DES CARTES
+           CREATION DES CARTES PIECES
         ========================================== */
 
         for (
@@ -530,7 +519,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       ADAPTER L'AFFICHAGE
+       ADAPTER AFFICHAGE
     ========================================== */
 
     function adapterAffichage() {
@@ -543,12 +532,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (modeMulti) {
 
             /*
-             * IMPORTANT :
-             * disparition totale des anciens
-             * champs Longueur / Largeur / Hauteur
+             * C'EST LA CORRECTION PRINCIPALE
+             *
+             * Les anciens champs de l'étape 1
+             * disparaissent complètement.
              */
 
-            masquerChampsClassiques();
+            masquerChampsOriginaux();
 
 
             nombrePiecesContainer.style.display =
@@ -564,10 +554,11 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
 
             /*
-             * Split mural
+             * Split mural :
+             * retour aux champs classiques.
              */
 
-            afficherChampsClassiques();
+            afficherChampsOriginaux();
 
 
             nombrePiecesContainer.style.display =
@@ -587,7 +578,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       CHANGEMENT NOMBRE DE PIECES
+       CHANGEMENT DU NOMBRE DE PIECES
     ========================================== */
 
     const nombrePieces =
@@ -607,7 +598,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       CHANGEMENT TYPE INSTALLATION
+       CHANGEMENT DU TYPE D'INSTALLATION
     ========================================== */
 
     choix
@@ -749,7 +740,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       VALIDATION
+       VALIDATION DES PIECES
     ========================================== */
 
     function validerPieces() {
@@ -819,7 +810,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       ADAPTER LES RESULTATS
+       ADAPTATION DES RESULTATS
     ========================================== */
 
     function adapterResultats() {
@@ -963,7 +954,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       API PRO CLIM
+       API POUR APP.JS
     ========================================== */
 
     window.PROCLIM = {
@@ -1003,7 +994,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       CALCUL
+       ADAPTATION AVANT RESULTATS
     ========================================== */
 
     const boutonCalculer =
