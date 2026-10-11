@@ -1,13 +1,17 @@
 /* ==========================================
    PRO CLIM — CHOIX DE L'INSTALLATION
-   Version Multi-split / Gainable
-   Correction : suppression des champs
-   Longueur / Largeur / Hauteur fantômes
+   Multi-split / Gainable
+   Correction complète des champs fantômes
 ========================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
     let typeInstallation = "split";
+
+
+    /* ==========================================
+       ELEMENTS PRINCIPAUX
+    ========================================== */
 
     const etape1 =
         document.getElementById("etape1");
@@ -27,16 +31,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       CHOIX DU TYPE D'INSTALLATION
+       CHOIX INSTALLATION
     ========================================== */
 
     const choix =
         document.createElement("div");
 
-    choix.className = "choice-group";
-    choix.id = "choixInstallation";
+    choix.className =
+        "choice-group";
+
+    choix.id =
+        "choixInstallation";
+
 
     choix.innerHTML = `
+
         <label>Type d'installation</label>
 
         <p class="step-description">
@@ -49,21 +58,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 type="button"
                 class="choice selected"
                 data-installation="split">
+
                 ❄️ Split mural
+
             </button>
+
 
             <button
                 type="button"
                 class="choice"
                 data-installation="multisplit">
+
                 🔗 Multi-split
+
             </button>
+
 
             <button
                 type="button"
                 class="choice"
                 data-installation="gainable">
+
                 🌬️ Gainable
+
             </button>
 
         </div>
@@ -86,24 +103,157 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       CONTENEUR NOMBRE DE PIECES
+       CHAMPS CLASSIQUES D'ORIGINE
+    ========================================== */
+
+    const longueurOriginale =
+        document.getElementById("longueur");
+
+    const largeurOriginale =
+        document.getElementById("largeur");
+
+    const hauteurOriginale =
+        document.getElementById("hauteur");
+
+
+    /*
+     * IMPORTANT :
+     * On récupère le bloc .field contenant
+     * chacun des anciens champs.
+     */
+
+    function trouverBlocChamp(element) {
+
+        if (!element) {
+            return null;
+        }
+
+
+        const bloc =
+            element.closest(".field");
+
+
+        if (bloc) {
+            return bloc;
+        }
+
+
+        return element.parentElement;
+
+    }
+
+
+    const blocLongueur =
+        trouverBlocChamp(
+            longueurOriginale
+        );
+
+    const blocLargeur =
+        trouverBlocChamp(
+            largeurOriginale
+        );
+
+    const blocHauteur =
+        trouverBlocChamp(
+            hauteurOriginale
+        );
+
+
+    /* ==========================================
+       MASQUER LES ANCIENS CHAMPS
+    ========================================== */
+
+    function masquerChampsClassiques() {
+
+        [
+            blocLongueur,
+            blocLargeur,
+            blocHauteur
+
+        ].forEach(bloc => {
+
+            if (!bloc) {
+                return;
+            }
+
+
+            /*
+             * hidden = sécurité supplémentaire
+             */
+
+            bloc.hidden = true;
+
+
+            /*
+             * !important = passe au-dessus
+             * des règles CSS existantes
+             */
+
+            bloc.style.setProperty(
+                "display",
+                "none",
+                "important"
+            );
+
+        });
+
+    }
+
+
+    /* ==========================================
+       AFFICHER LES ANCIENS CHAMPS
+    ========================================== */
+
+    function afficherChampsClassiques() {
+
+        [
+            blocLongueur,
+            blocLargeur,
+            blocHauteur
+
+        ].forEach(bloc => {
+
+            if (!bloc) {
+                return;
+            }
+
+
+            bloc.hidden = false;
+
+
+            bloc.style.removeProperty(
+                "display"
+            );
+
+        });
+
+    }
+
+
+    /* ==========================================
+       NOMBRE DE PIECES
     ========================================== */
 
     const nombrePiecesContainer =
         document.createElement("div");
 
+
     nombrePiecesContainer.id =
         "nombrePiecesContainer";
+
 
     nombrePiecesContainer.style.display =
         "none";
 
+
     nombrePiecesContainer.innerHTML = `
+
         <div class="field">
 
             <label for="nombrePieces">
                 Nombre de pièces
             </label>
+
 
             <select id="nombrePieces">
 
@@ -130,21 +280,26 @@ document.addEventListener("DOMContentLoaded", () => {
             </select>
 
         </div>
+
     `;
 
 
-    choix.after(nombrePiecesContainer);
+    choix.after(
+        nombrePiecesContainer
+    );
 
 
     /* ==========================================
-       CONTENEUR DES PIECES
+       CONTENEUR PIECES
     ========================================== */
 
     const piecesContainer =
         document.createElement("div");
 
+
     piecesContainer.id =
         "piecesContainer";
+
 
     piecesContainer.style.display =
         "none";
@@ -156,155 +311,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       CHAMPS CLASSIQUES D'ORIGINE
-    ========================================== */
-
-    const longueurOriginale =
-        document.getElementById("longueur");
-
-    const largeurOriginale =
-        document.getElementById("largeur");
-
-    const hauteurOriginale =
-        document.getElementById("hauteur");
-
-
-    /*
-     * On récupère le bloc complet contenant
-     * chaque ancien champ.
-     *
-     * Si .field existe : on le prend.
-     * Sinon : on remonte au parent direct.
-     */
-
-    function trouverBlocChamp(element) {
-
-        if (!element) {
-            return null;
-        }
-
-        const bloc =
-            element.closest(".field");
-
-        if (bloc) {
-            return bloc;
-        }
-
-        return element.parentElement;
-    }
-
-
-    const blocLongueur =
-        trouverBlocChamp(longueurOriginale);
-
-    const blocLargeur =
-        trouverBlocChamp(largeurOriginale);
-
-    const blocHauteur =
-        trouverBlocChamp(hauteurOriginale);
-
-
-    /* ==========================================
-       AFFICHER / MASQUER LES ANCIENS CHAMPS
-    ========================================== */
-
-    function masquerChampsClassiques() {
-
-        if (blocLongueur) {
-            blocLongueur.style.display = "none";
-        }
-
-        if (blocLargeur) {
-            blocLargeur.style.display = "none";
-        }
-
-        if (blocHauteur) {
-            blocHauteur.style.display = "none";
-        }
-
-    }
-
-
-    function afficherChampsClassiques() {
-
-        if (blocLongueur) {
-            blocLongueur.style.display = "";
-        }
-
-        if (blocLargeur) {
-            blocLargeur.style.display = "";
-        }
-
-        if (blocHauteur) {
-            blocHauteur.style.display = "";
-        }
-
-    }
-
-
-    /* ==========================================
-       AFFICHAGE SELON INSTALLATION
-    ========================================== */
-
-    function adapterAffichage() {
-
-        const modeMulti =
-            typeInstallation === "multisplit" ||
-            typeInstallation === "gainable";
-
-
-        if (modeMulti) {
-
-            /*
-             * Multi-split / Gainable :
-             * les anciens champs génériques
-             * doivent disparaître.
-             */
-
-            masquerChampsClassiques();
-
-
-            nombrePiecesContainer.style.display =
-                "block";
-
-            piecesContainer.style.display =
-                "block";
-
-
-            afficherPieces();
-
-
-        } else {
-
-            /*
-             * Split mural :
-             * retour aux champs classiques.
-             */
-
-            afficherChampsClassiques();
-
-
-            nombrePiecesContainer.style.display =
-                "none";
-
-            piecesContainer.style.display =
-                "none";
-
-            piecesContainer.innerHTML = "";
-
-        }
-
-    }
-
-
-    /* ==========================================
-       CREATION DES PIECES
+       CREER LES PIECES
     ========================================== */
 
     function afficherPieces() {
 
         const select =
-            document.getElementById("nombrePieces");
+            document.getElementById(
+                "nombrePieces"
+            );
 
 
         if (!select) {
@@ -320,7 +335,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         /*
-         * Sauvegarde des valeurs déjà saisies.
+         * Sauvegarde des valeurs déjà saisies
          */
 
         const anciennesPieces = [];
@@ -385,21 +400,33 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        piecesContainer.innerHTML = "";
+        /*
+         * Nettoyage
+         */
+
+        piecesContainer.innerHTML =
+            "";
 
 
         /* ==========================================
-           CREATION DES CARTES PIECES
+           CREATION DES CARTES
         ========================================== */
 
-        for (let i = 1; i <= nombre; i++) {
+        for (
+            let i = 1;
+            i <= nombre;
+            i++
+        ) {
 
             const ancienne =
                 anciennesPieces[i - 1] || {};
 
 
             const carte =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
+
 
             carte.className =
                 "choice-group piece-card";
@@ -493,7 +520,9 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
 
 
-            piecesContainer.appendChild(carte);
+            piecesContainer.appendChild(
+                carte
+            );
 
         }
 
@@ -501,7 +530,64 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       CHANGEMENT DU NOMBRE DE PIECES
+       ADAPTER L'AFFICHAGE
+    ========================================== */
+
+    function adapterAffichage() {
+
+        const modeMulti =
+            typeInstallation === "multisplit" ||
+            typeInstallation === "gainable";
+
+
+        if (modeMulti) {
+
+            /*
+             * IMPORTANT :
+             * disparition totale des anciens
+             * champs Longueur / Largeur / Hauteur
+             */
+
+            masquerChampsClassiques();
+
+
+            nombrePiecesContainer.style.display =
+                "block";
+
+
+            piecesContainer.style.display =
+                "block";
+
+
+            afficherPieces();
+
+        } else {
+
+            /*
+             * Split mural
+             */
+
+            afficherChampsClassiques();
+
+
+            nombrePiecesContainer.style.display =
+                "none";
+
+
+            piecesContainer.style.display =
+                "none";
+
+
+            piecesContainer.innerHTML =
+                "";
+
+        }
+
+    }
+
+
+    /* ==========================================
+       CHANGEMENT NOMBRE DE PIECES
     ========================================== */
 
     const nombrePieces =
@@ -521,7 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       SELECTION DU TYPE
+       CHANGEMENT TYPE INSTALLATION
     ========================================== */
 
     choix
@@ -565,7 +651,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       RECUPERATION DES PIECES
+       RECUPERER LES PIECES
     ========================================== */
 
     function getRooms() {
@@ -591,7 +677,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const pieces = [];
 
 
-        for (let i = 1; i <= nombre; i++) {
+        for (
+            let i = 1;
+            i <= nombre;
+            i++
+        ) {
 
             const nom =
                 document.getElementById(
@@ -659,7 +749,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       VALIDATION DES PIECES
+       VALIDATION
     ========================================== */
 
     function validerPieces() {
@@ -729,7 +819,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       ADAPTATION DES RESULTATS
+       ADAPTER LES RESULTATS
     ========================================== */
 
     function adapterResultats() {
@@ -873,7 +963,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       API POUR APP.JS
+       API PRO CLIM
     ========================================== */
 
     window.PROCLIM = {
@@ -913,7 +1003,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       ADAPTATION AVANT CALCUL
+       CALCUL
     ========================================== */
 
     const boutonCalculer =
