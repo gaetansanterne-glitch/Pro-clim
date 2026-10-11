@@ -1,181 +1,32 @@
 /* ==========================================
-   PRO CLIM
-   GESTION DE L'INSTALLATION
-   Version 2 — MONO / MULTI-PIÈCES
+   PRO CLIM — CHOIX DE L'INSTALLATION
+   Version Multi-split / Gainable
 ========================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const etape1 =
-        document.getElementById("etape1");
+    let typeInstallation = "split";
 
-    const boutonContinuer =
-        document.getElementById("btnEtape1");
-
+    const etape1 = document.getElementById("etape1");
+    const boutonContinuer = document.getElementById("btnEtape1");
 
     if (!etape1 || !boutonContinuer) {
-
-        console.error(
-            "Pro Clim : étape 1 introuvable."
-        );
-
+        console.error("Pro Clim : étape 1 introuvable.");
         return;
-
     }
 
 
     /* ==========================================
-       ÉTAT
+       CHOIX DU TYPE D'INSTALLATION
     ========================================== */
 
-    let typeInstallation = "split";
+    const choix = document.createElement("div");
 
-    let nombrePieces = 1;
-
-
-    /* ==========================================
-       OBJET GLOBAL
-    ========================================== */
-
-    window.PROCLIM = {
-
-        getTypeInstallation() {
-
-            return typeInstallation;
-
-        },
-
-
-        getNombrePieces() {
-
-            return nombrePieces;
-
-        },
-
-
-        getRooms() {
-
-            const pieces = [];
-
-
-            for (
-                let i = 1;
-                i <= nombrePieces;
-                i++
-            ) {
-
-                const longueur =
-                    document.getElementById(
-                        `piece${i}Longueur`
-                    );
-
-                const largeur =
-                    document.getElementById(
-                        `piece${i}Largeur}`
-                    );
-
-                const hauteur =
-                    document.getElementById(
-                        `piece${i}Hauteur`
-                    );
-
-
-                if (
-                    !longueur ||
-                    !largeur ||
-                    !hauteur
-                ) {
-
-                    continue;
-
-                }
-
-
-                const occupation =
-                    document.getElementById(
-                        `piece${i}Occupation`
-                    );
-
-                const eclairage =
-                    document.getElementById(
-                        `piece${i}Eclairage`
-                    );
-
-                const informatique =
-                    document.getElementById(
-                        `piece${i}Informatique`
-                    );
-
-
-                pieces.push({
-
-                    nom:
-                        `Pièce ${i}`,
-
-                    longueur:
-                        parseFloat(
-                            longueur.value
-                        ),
-
-                    largeur:
-                        parseFloat(
-                            largeur.value
-                        ),
-
-                    hauteur:
-                        parseFloat(
-                            hauteur.value
-                        ),
-
-                    occupation:
-                        occupation
-                            ? parseInt(
-                                occupation.value,
-                                10
-                            )
-                            : 1,
-
-                    eclairage:
-                        eclairage
-                            ? eclairage.value
-                            : "Standard",
-
-                    informatique:
-                        informatique
-                            ? informatique.value
-                            : "Aucun"
-
-                });
-
-            }
-
-
-            return pieces;
-
-        }
-
-    };
-
-
-    /* ==========================================
-       CHOIX INSTALLATION
-    ========================================== */
-
-    const choix =
-        document.createElement("div");
-
-    choix.className =
-        "choice-group";
-
-    choix.id =
-        "choixInstallation";
-
+    choix.className = "choice-group";
+    choix.id = "choixInstallation";
 
     choix.innerHTML = `
-
-        <label>
-            Type d'installation
-        </label>
+        <label>Type d'installation</label>
 
         <p class="step-description">
             Quel système souhaites-tu dimensionner ?
@@ -183,349 +34,373 @@ document.addEventListener("DOMContentLoaded", () => {
 
         <div class="choice-grid">
 
-            <button
-                type="button"
-                class="choice selected"
-                data-installation="split">
-
+            <button type="button"
+                    class="choice selected"
+                    data-installation="split">
                 ❄️ Split mural
-
             </button>
 
-            <button
-                type="button"
-                class="choice"
-                data-installation="multisplit">
-
-                🔗 Multi-split
-
+            <button type="button"
+                    class="choice"
+                    data-installation="multisplit">
+                ❄️ Multi-split
             </button>
 
-            <button
-                type="button"
-                class="choice"
-                data-installation="gainable">
-
+            <button type="button"
+                    class="choice"
+                    data-installation="gainable">
                 🌬️ Gainable
-
             </button>
 
         </div>
-
-        <div id="nombrePiecesContainer"></div>
-
     `;
 
 
     const premierChamp =
         etape1.querySelector(".field");
 
-
     if (premierChamp) {
-
         premierChamp.before(choix);
-
     } else {
-
         boutonContinuer.before(choix);
-
     }
 
 
     /* ==========================================
-       CONTAINER PIÈCES
+       CONTENEUR NOMBRE DE PIECES
     ========================================== */
 
     const nombrePiecesContainer =
-        document.getElementById(
-            "nombrePiecesContainer"
-        );
+        document.createElement("div");
+
+    nombrePiecesContainer.id =
+        "nombrePiecesContainer";
+
+    nombrePiecesContainer.style.display =
+        "none";
+
+    nombrePiecesContainer.innerHTML = `
+        <div class="field">
+
+            <label for="nombrePieces">
+                Nombre de pièces
+            </label>
+
+            <select id="nombrePieces">
+
+                <option value="1">1 pièce</option>
+                <option value="2">2 pièces</option>
+                <option value="3">3 pièces</option>
+                <option value="4">4 pièces</option>
+                <option value="5">5 pièces</option>
+
+            </select>
+
+        </div>
+    `;
+
+    choix.after(nombrePiecesContainer);
 
 
     /* ==========================================
-       CHOIX DU NOMBRE DE PIÈCES
+       CONTENEUR DES PIECES
     ========================================== */
 
-    function afficherChoixNombrePieces() {
+    const piecesContainer =
+        document.createElement("div");
 
-        if (
-            typeInstallation === "split"
-        ) {
+    piecesContainer.id =
+        "piecesContainer";
 
-            nombrePieces = 1;
+    piecesContainer.style.display =
+        "none";
 
-            nombrePiecesContainer.innerHTML =
-                "";
+    nombrePiecesContainer.after(piecesContainer);
+
+
+    /* ==========================================
+       CHAMPS CLASSIQUES D'ORIGINE
+       Longueur / Largeur / Hauteur
+    ========================================== */
+
+    const champsClassiques =
+        etape1.querySelectorAll(".field");
+
+
+    /*
+     * Les champs classiques correspondent aux
+     * champs déjà présents dans index.html.
+     *
+     * On les identifie grâce à leurs inputs.
+     */
+
+    const longueurOriginale =
+        document.getElementById("longueur");
+
+    const largeurOriginale =
+        document.getElementById("largeur");
+
+    const hauteurOriginale =
+        document.getElementById("hauteur");
+
+
+    let blocLongueur = null;
+    let blocLargeur = null;
+    let blocHauteur = null;
+
+
+    if (longueurOriginale) {
+        blocLongueur =
+            longueurOriginale.closest(".field");
+    }
+
+    if (largeurOriginale) {
+        blocLargeur =
+            largeurOriginale.closest(".field");
+    }
+
+    if (hauteurOriginale) {
+        blocHauteur =
+            hauteurOriginale.closest(".field");
+    }
+
+
+    /* ==========================================
+       AFFICHER / MASQUER LES CHAMPS
+    ========================================== */
+
+    function adapterAffichage() {
+
+        const modeMulti =
+            typeInstallation === "multisplit" ||
+            typeInstallation === "gainable";
+
+
+        if (modeMulti) {
+
+            /*
+             * On cache les anciens champs
+             * Longueur / Largeur / Hauteur.
+             */
+
+            if (blocLongueur) {
+                blocLongueur.style.display = "none";
+            }
+
+            if (blocLargeur) {
+                blocLargeur.style.display = "none";
+            }
+
+            if (blocHauteur) {
+                blocHauteur.style.display = "none";
+            }
+
+
+            nombrePiecesContainer.style.display =
+                "block";
+
+            piecesContainer.style.display =
+                "block";
+
 
             afficherPieces();
 
-            return;
+        } else {
 
-        }
+            /*
+             * Split mural :
+             * on remet les champs classiques.
+             */
 
-
-        nombrePiecesContainer.innerHTML = `
-
-            <div class="field">
-
-                <label for="nombrePieces">
-                    Nombre de pièces
-                </label>
-
-                <select id="nombrePieces">
-
-                    <option value="1">
-                        1 pièce
-                    </option>
-
-                    <option value="2">
-                        2 pièces
-                    </option>
-
-                    <option value="3">
-                        3 pièces
-                    </option>
-
-                    <option value="4">
-                        4 pièces
-                    </option>
-
-                    <option value="5">
-                        5 pièces
-                    </option>
-
-                </select>
-
-            </div>
-
-            <div id="piecesContainer"></div>
-
-        `;
-
-
-        const select =
-            document.getElementById(
-                "nombrePieces"
-            );
-
-
-        select.value =
-            nombrePieces;
-
-
-        select.addEventListener(
-            "change",
-            () => {
-
-                nombrePieces =
-                    parseInt(
-                        select.value,
-                        10
-                    );
-
-                afficherPieces();
-
+            if (blocLongueur) {
+                blocLongueur.style.display = "";
             }
-        );
+
+            if (blocLargeur) {
+                blocLargeur.style.display = "";
+            }
+
+            if (blocHauteur) {
+                blocHauteur.style.display = "";
+            }
 
 
-        afficherPieces();
+            nombrePiecesContainer.style.display =
+                "none";
+
+            piecesContainer.style.display =
+                "none";
+
+            piecesContainer.innerHTML = "";
+        }
 
     }
 
 
     /* ==========================================
-       CRÉATION DES PIÈCES
+       CREATION DES PIECES
     ========================================== */
 
     function afficherPieces() {
 
-        let container =
-            document.getElementById(
-                "piecesContainer"
-            );
+        const select =
+            document.getElementById("nombrePieces");
+
+        if (!select) return;
 
 
-        if (
-            typeInstallation === "split"
-        ) {
-
-            if (!container) {
-
-                container =
-                    document.createElement(
-                        "div"
-                    );
-
-                container.id =
-                    "piecesContainer";
-
-                nombrePiecesContainer
-                    .appendChild(container);
-
-            }
-
-        }
+        const nombre =
+            parseInt(select.value, 10);
 
 
-        if (!container) return;
+        /*
+         * Sauvegarde des valeurs déjà saisies.
+         */
 
+        const anciennesPieces = [];
 
-        container.innerHTML = "";
+        for (let i = 1; i <= 5; i++) {
 
+            const nom =
+                document.getElementById(
+                    `piece${i}Nom`
+                );
 
-        for (
-            let i = 1;
-            i <= nombrePieces;
-            i++
-        ) {
-
-            const ancienneLongueur =
+            const longueur =
                 document.getElementById(
                     `piece${i}Longueur`
                 );
 
-
-            const valeurLongueur =
-                ancienneLongueur
-                    ? ancienneLongueur.value
-                    : "";
-
-
-            const ancienneLargeur =
+            const largeur =
                 document.getElementById(
                     `piece${i}Largeur`
                 );
 
-
-            const valeurLargeur =
-                ancienneLargeur
-                    ? ancienneLargeur.value
-                    : "";
-
-
-            const ancienneHauteur =
+            const hauteur =
                 document.getElementById(
                     `piece${i}Hauteur`
                 );
 
 
-            const valeurHauteur =
-                ancienneHauteur
-                    ? ancienneHauteur.value
-                    : "";
+            if (
+                nom ||
+                longueur ||
+                largeur ||
+                hauteur
+            ) {
+
+                anciennesPieces.push({
+                    nom: nom ? nom.value : "",
+                    longueur: longueur ? longueur.value : "",
+                    largeur: largeur ? largeur.value : "",
+                    hauteur: hauteur ? hauteur.value : ""
+                });
+
+            }
+
+        }
+
+
+        piecesContainer.innerHTML = "";
+
+
+        /* ==========================================
+           CREATION DES CARTES
+        ========================================== */
+
+        for (let i = 1; i <= nombre; i++) {
+
+            const ancienne =
+                anciennesPieces[i - 1] || {};
 
 
             const carte =
-                document.createElement(
-                    "div"
-                );
-
+                document.createElement("div");
 
             carte.className =
-                "card";
-
-
-            carte.style.marginTop =
-                "15px";
+                "choice-group piece-card";
 
 
             carte.innerHTML = `
-
-                <h3>
-                    📐 Pièce ${i}
-                </h3>
+                <label>
+                    🏠 Pièce ${i}
+                </label>
 
                 <div class="field">
 
-                    <label>
+                    <label for="piece${i}Nom">
                         Nom de la pièce
                     </label>
 
                     <input
-                        id="piece${i}Nom"
                         type="text"
-                        placeholder="Ex. Salon"
+                        id="piece${i}Nom"
+                        placeholder="Ex : Salon"
+                        value="${ancienne.nom || ""}"
                     >
 
                 </div>
 
-                <div class="field">
-
-                    <label>
-                        Longueur
-                    </label>
-
-                    <div class="input-unit">
-
-                        <input
-                            id="piece${i}Longueur"
-                            type="number"
-                            inputmode="decimal"
-                            min="0.1"
-                            step="0.01"
-                            value="${valeurLongueur}"
-                            placeholder="Ex. 5"
-                        >
-
-                        <span>m</span>
-
-                    </div>
-
-                </div>
 
                 <div class="field">
 
-                    <label>
-                        Largeur
+                    <label for="piece${i}Longueur">
+                        Longueur (m)
                     </label>
 
-                    <div class="input-unit">
-
-                        <input
-                            id="piece${i}Largeur"
-                            type="number"
-                            inputmode="decimal"
-                            min="0.1"
-                            step="0.01"
-                            value="${valeurLargeur}"
-                            placeholder="Ex. 4"
-                        >
-
-                        <span>m</span>
-
-                    </div>
+                    <input
+                        type="number"
+                        id="piece${i}Longueur"
+                        inputmode="decimal"
+                        step="0.01"
+                        min="0"
+                        placeholder="Ex : 5"
+                        value="${ancienne.longueur || ""}"
+                    >
 
                 </div>
+
 
                 <div class="field">
 
-                    <label>
-                        Hauteur sous plafond
+                    <label for="piece${i}Largeur">
+                        Largeur (m)
                     </label>
 
-                    <div class="input-unit">
-
-                        <input
-                            id="piece${i}Hauteur"
-                            type="number"
-                            inputmode="decimal"
-                            min="1"
-                            step="0.01"
-                            value="${valeurHauteur}"
-                            placeholder="Ex. 2.5"
-                        >
-
-                        <span>m</span>
-
-                    </div>
+                    <input
+                        type="number"
+                        id="piece${i}Largeur"
+                        inputmode="decimal"
+                        step="0.01"
+                        min="0"
+                        placeholder="Ex : 4"
+                        value="${ancienne.largeur || ""}"
+                    >
 
                 </div>
 
+
+                <div class="field">
+
+                    <label for="piece${i}Hauteur">
+                        Hauteur sous plafond (m)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="piece${i}Hauteur"
+                        inputmode="decimal"
+                        step="0.01"
+                        min="0"
+                        placeholder="Ex : 2,5"
+                        value="${ancienne.hauteur || ""}"
+                    >
+
+                </div>
             `;
 
 
-            container.appendChild(carte);
+            piecesContainer.appendChild(carte);
 
         }
 
@@ -533,13 +408,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       CHANGEMENT INSTALLATION
+       CHANGEMENT DU NOMBRE DE PIECES
+    ========================================== */
+
+    const nombrePieces =
+        document.getElementById("nombrePieces");
+
+
+    if (nombrePieces) {
+
+        nombrePieces.addEventListener(
+            "change",
+            afficherPieces
+        );
+
+    }
+
+
+    /* ==========================================
+       SELECTION DU TYPE
     ========================================== */
 
     choix
-        .querySelectorAll(
-            "[data-installation]"
-        )
+        .querySelectorAll("[data-installation]")
         .forEach(bouton => {
 
             bouton.addEventListener(
@@ -556,19 +447,19 @@ document.addEventListener("DOMContentLoaded", () => {
                         )
                         .forEach(autre => {
 
-                            autre.classList
-                                .remove(
-                                    "selected"
-                                );
+                            autre.classList.remove(
+                                "selected"
+                            );
 
                         });
 
 
-                    bouton.classList
-                        .add("selected");
+                    bouton.classList.add(
+                        "selected"
+                    );
 
 
-                    afficherChoixNombrePieces();
+                    adapterAffichage();
 
                 }
             );
@@ -577,85 +468,156 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================================
-       ADAPTATION INITIALE
+       RECUPERATION DES PIECES
     ========================================== */
 
-    afficherChoixNombrePieces();
+    function getRooms() {
+
+        const select =
+            document.getElementById("nombrePieces");
+
+        if (!select) return [];
+
+        const nombre =
+            parseInt(select.value, 10);
+
+        const pieces = [];
 
 
-    /* ==========================================
-       VALIDATION DES PIÈCES
-    ========================================== */
+        for (let i = 1; i <= nombre; i++) {
 
-    window.PROCLIM.validerPieces =
-        function () {
+            const nom =
+                document.getElementById(
+                    `piece${i}Nom`
+                );
 
-            const pieces =
-                window.PROCLIM.getRooms();
+            const longueur =
+                document.getElementById(
+                    `piece${i}Longueur`
+                );
+
+            const largeur =
+                document.getElementById(
+                    `piece${i}Largeur`
+                );
+
+            const hauteur =
+                document.getElementById(
+                    `piece${i}Hauteur`
+                );
 
 
             if (
-                pieces.length !==
-                nombrePieces
+                !longueur ||
+                !largeur ||
+                !hauteur
             ) {
-
-                return false;
-
+                continue;
             }
 
 
-            return pieces.every(piece => {
+            pieces.push({
 
-                return (
-                    Number.isFinite(
-                        piece.longueur
-                    ) &&
-                    Number.isFinite(
-                        piece.largeur
-                    ) &&
-                    Number.isFinite(
-                        piece.hauteur
-                    ) &&
-                    piece.longueur > 0 &&
-                    piece.largeur > 0 &&
-                    piece.hauteur > 0
-                );
+                nom: nom
+                    ? nom.value.trim()
+                    : `Pièce ${i}`,
+
+                longueur:
+                    parseFloat(longueur.value),
+
+                largeur:
+                    parseFloat(largeur.value),
+
+                hauteur:
+                    parseFloat(hauteur.value)
 
             });
 
-        };
+        }
+
+
+        return pieces;
+
+    }
 
 
     /* ==========================================
-       RÉSULTATS
+       VALIDATION DES PIECES
+    ========================================== */
+
+    function validerPieces() {
+
+        const pieces =
+            getRooms();
+
+
+        if (
+            pieces.length === 0
+        ) {
+
+            return {
+                valide: false,
+                message:
+                    "⚠️ Renseigne au moins une pièce."
+            };
+
+        }
+
+
+        for (let i = 0; i < pieces.length; i++) {
+
+            const piece =
+                pieces[i];
+
+
+            if (
+                !piece.longueur ||
+                !piece.largeur ||
+                !piece.hauteur ||
+                piece.longueur <= 0 ||
+                piece.largeur <= 0 ||
+                piece.hauteur <= 0
+            ) {
+
+                return {
+                    valide: false,
+                    message:
+                        `⚠️ Vérifie les dimensions de la pièce ${i + 1}.`
+                };
+
+            }
+
+        }
+
+
+        return {
+            valide: true,
+            pieces
+        };
+
+    }
+
+
+    /* ==========================================
+       ADAPTATION DES RESULTATS
     ========================================== */
 
     function adapterResultats() {
 
         const split =
-            document.getElementById(
-                "resSplit"
-            );
+            document.getElementById("resSplit");
 
         const gainable =
-            document.getElementById(
-                "resGainable"
-            );
+            document.getElementById("resGainable");
 
         const debit =
-            document.getElementById(
-                "resDebit"
-            );
+            document.getElementById("resDebit");
 
         const bouches =
-            document.getElementById(
-                "resBouches"
-            );
+            document.getElementById("resBouches");
 
         const diametre =
-            document.getElementById(
-                "resDiametre"
-            );
+            document.getElementById("resDiametre");
 
 
         if (
@@ -665,112 +627,109 @@ document.addEventListener("DOMContentLoaded", () => {
             !bouches ||
             !diametre
         ) {
-
             return;
-
         }
 
 
         const ligneDebit =
-            debit.closest(
-                ".result-item"
-            );
+            debit.closest(".result-item");
 
         const ligneBouches =
-            bouches.closest(
-                ".result-item"
-            );
+            bouches.closest(".result-item");
 
         const ligneDiametre =
-            diametre.closest(
-                ".result-item"
-            );
+            diametre.closest(".result-item");
 
 
-        if (
-            typeInstallation ===
-            "split"
+        if (typeInstallation === "split") {
+
+            split.style.display = "block";
+            gainable.style.display = "none";
+
+            if (ligneDebit)
+                ligneDebit.style.display = "none";
+
+            if (ligneBouches)
+                ligneBouches.style.display = "none";
+
+            if (ligneDiametre)
+                ligneDiametre.style.display = "none";
+
+
+        } else if (
+            typeInstallation === "multisplit"
         ) {
 
-            split.style.display =
-                "block";
-
-            gainable.style.display =
-                "none";
-
+            split.style.display = "block";
+            gainable.style.display = "none";
 
             if (ligneDebit)
-                ligneDebit.style.display =
-                    "none";
+                ligneDebit.style.display = "none";
 
             if (ligneBouches)
-                ligneBouches.style.display =
-                    "none";
+                ligneBouches.style.display = "none";
 
             if (ligneDiametre)
-                ligneDiametre.style.display =
-                    "none";
-
-        }
+                ligneDiametre.style.display = "none";
 
 
-        else if (
-            typeInstallation ===
-            "multisplit"
-        ) {
+        } else {
 
-            split.style.display =
-                "block";
-
-            gainable.style.display =
-                "none";
-
+            split.style.display = "none";
+            gainable.style.display = "block";
 
             if (ligneDebit)
-                ligneDebit.style.display =
-                    "none";
+                ligneDebit.style.display = "";
 
             if (ligneBouches)
-                ligneBouches.style.display =
-                    "none";
+                ligneBouches.style.display = "";
 
             if (ligneDiametre)
-                ligneDiametre.style.display =
-                    "none";
-
-        }
-
-
-        else {
-
-            split.style.display =
-                "none";
-
-            gainable.style.display =
-                "block";
-
-
-            if (ligneDebit)
-                ligneDebit.style.display =
-                    "";
-
-            if (ligneBouches)
-                ligneBouches.style.display =
-                    "";
-
-            if (ligneDiametre)
-                ligneDiametre.style.display =
-                    "";
+                ligneDiametre.style.display = "";
 
         }
 
     }
 
 
+    /* ==========================================
+       API POUR APP.JS
+    ========================================== */
+
+    window.PROCLIM = {
+
+        getTypeInstallation() {
+            return typeInstallation;
+        },
+
+        getNombrePieces() {
+
+            const select =
+                document.getElementById(
+                    "nombrePieces"
+                );
+
+            return select
+                ? parseInt(select.value, 10)
+                : 1;
+
+        },
+
+        getRooms,
+
+        validerPieces,
+
+        adapterResultats
+
+    };
+
+
+    /* ==========================================
+       ADAPTATION AVANT CALCUL
+    ========================================== */
+
     const boutonCalculer =
-        document.getElementById(
-            "btnCalculer"
-        );
+        document.getElementById("btnCalculer");
 
 
     if (boutonCalculer) {
@@ -790,8 +749,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+    /* ==========================================
+       INITIALISATION
+    ========================================== */
+
+    adapterAffichage();
+
+
     console.log(
-        "❄️ Pro Clim : gestion mono / multi-pièces chargée."
+        "❄️ Pro Clim : installation Split / Multi-split / Gainable chargée."
     );
 
 });
