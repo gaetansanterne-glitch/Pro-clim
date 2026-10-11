@@ -45,30 +45,35 @@
         le dépannage et les outils CVC.
     </p>
     <button id="btnCommencer"
+            type="button"
             class="btn-primary">
         📐 Nouvelle étude
     </button>
 </div>
 <div class="quick-grid">
     <button id="btnAccueilEtude"
+            type="button"
             class="quick-card">
         <span>📐</span>
         <strong>Étude</strong>
         <small>Dimensionnement</small>
     </button>
     <button id="btnAccueilDiagnostic"
+            type="button"
             class="quick-card">
         <span>🛠️</span>
         <strong>Diagnostic</strong>
         <small>Dépannage</small>
     </button>
     <button id="btnAccueilPression"
+            type="button"
             class="quick-card">
         <span>🌡️</span>
         <strong>Pressions</strong>
         <small>Fluides frigorigènes</small>
     </button>
     <button id="btnAccueilOutils"
+            type="button"
             class="quick-card">
         <span>🧰</span>
         <strong>Outils</strong>
@@ -81,8 +86,10 @@
 ========================================== -->
 <section id="pageEtude"
          class="page">
+<!-- TITRE -->
 <div class="page-title">
     <button id="btnRetourAccueil"
+            type="button"
             class="btn-back">
         ←
     </button>
@@ -120,12 +127,13 @@
             de la pièce à traiter.
         </p>
         <!-- ==================================
-             ANCIENS CHAMPS CLASSIQUES
-             Masqués lorsque les pièces
-             dynamiques sont utilisées.
+             DIMENSIONS CLASSIQUES
+             Utilisées pour une étude simple.
+             Installation.js peut les masquer
+             lorsqu'une configuration
+             multi-pièces est sélectionnée.
         =================================== -->
-        <div id="dimensionsClassiques"
-             style="display: none;">
+        <div id="dimensionsClassiques">
             <div class="field">
                 <label for="longueur">
                     Longueur
@@ -169,10 +177,14 @@
                 </div>
             </div>
         </div>
+        <!-- ZONE UTILISÉE PAR
+             INSTALLATION.JS POUR LES PIÈCES -->
+        <div id="piecesContainer"></div>
         <div id="erreurEtape1"
              class="error-message">
         </div>
         <button id="btnEtape1"
+                type="button"
                 class="btn-primary">
             Continuer →
         </button>
@@ -193,22 +205,26 @@
         <div class="choice-group">
             <label>Isolation</label>
             <div class="choice-grid">
-                <button class="choice"
+                <button type="button"
+                        class="choice"
                         data-name="isolation"
                         data-value="Excellente">
                     Excellente
                 </button>
-                <button class="choice"
+                <button type="button"
+                        class="choice"
                         data-name="isolation"
                         data-value="Bonne">
                     Bonne
                 </button>
-                <button class="choice selected"
+                <button type="button"
+                        class="choice selected"
                         data-name="isolation"
                         data-value="Moyenne">
                     Moyenne
                 </button>
-                <button class="choice"
+                <button type="button"
+                        class="choice"
                         data-name="isolation"
                         data-value="Mauvaise">
                     Mauvaise
@@ -218,17 +234,20 @@
         <div class="choice-group">
             <label>Vitrage</label>
             <div class="choice-grid">
-                <button class="choice"
+                <button type="button"
+                        class="choice"
                         data-name="vitrage"
                         data-value="Simple">
                     Simple
                 </button>
-                <button class="choice selected"
+                <button type="button"
+                        class="choice selected"
                         data-name="vitrage"
                         data-value="Double">
                     Double
                 </button>
-                <button class="choice"
+                <button type="button"
+                        class="choice"
                         data-name="vitrage"
                         data-value="Triple">
                     Triple
@@ -238,22 +257,26 @@
         <div class="choice-group">
             <label>Exposition principale</label>
             <div class="choice-grid">
-                <button class="choice"
+                <button type="button"
+                        class="choice"
                         data-name="exposition"
                         data-value="Nord">
                     Nord
                 </button>
-                <button class="choice"
+                <button type="button"
+                        class="choice"
                         data-name="exposition"
                         data-value="Est">
                     Est
                 </button>
-                <button class="choice selected"
+                <button type="button"
+                        class="choice selected"
                         data-name="exposition"
                         data-value="Sud">
                     Sud
                 </button>
-                <button class="choice"
+                <button type="button"
+                        class="choice"
                         data-name="exposition"
                         data-value="Ouest">
                     Ouest
@@ -262,10 +285,12 @@
         </div>
         <div class="navigation-buttons">
             <button id="btnRetour2"
+                    type="button"
                     class="btn-secondary">
                 ← Retour
             </button>
             <button id="btnEtape2"
+                    type="button"
                     class="btn-primary">
                 Continuer →
             </button>
@@ -287,17 +312,20 @@
         <div class="choice-group">
             <label>Étage</label>
             <div class="choice-grid">
-                <button class="choice selected"
+                <button type="button"
+                        class="choice selected"
                         data-name="etage"
                         data-value="RDC">
                     RDC
                 </button>
-                <button class="choice"
+                <button type="button"
+                        class="choice"
                         data-name="etage"
                         data-value="Intermediaire">
                     Intermédiaire
                 </button>
-                <button class="choice"
+                <button type="button"
+                        class="choice"
                         data-name="etage"
                         data-value="Dernier">
                     Dernier étage
@@ -307,12 +335,14 @@
         <div class="choice-group">
             <label>Toiture au-dessus du local</label>
             <div class="choice-grid">
-                <button class="choice selected"
+                <button type="button"
+                        class="choice selected"
                         data-name="toiture"
                         data-value="Non">
                     Non
                 </button>
-                <button class="choice"
+                <button type="button"
+                        class="choice"
                         data-name="toiture"
                         data-value="Oui">
                     Oui
@@ -322,17 +352,20 @@
         <div class="choice-group">
             <label>Région</label>
             <div class="choice-grid">
-                <button class="choice"
+                <button type="button"
+                        class="choice"
                         data-name="region"
                         data-value="Nord">
                     Nord
                 </button>
-                <button class="choice selected"
+                <button type="button"
+                        class="choice selected"
                         data-name="region"
                         data-value="Centre">
                     Centre
                 </button>
-                <button class="choice"
+                <button type="button"
+                        class="choice"
                         data-name="region"
                         data-value="Sud">
                     Sud
@@ -341,10 +374,12 @@
         </div>
         <div class="navigation-buttons">
             <button id="btnRetour3"
+                    type="button"
                     class="btn-secondary">
                 ← Retour
             </button>
             <button id="btnEtape3"
+                    type="button"
                     class="btn-primary">
                 Continuer →
             </button>
@@ -431,10 +466,12 @@
         </div>
         <div class="navigation-buttons">
             <button id="btnRetour4"
+                    type="button"
                     class="btn-secondary">
                 ← Retour
             </button>
             <button id="btnCalculer"
+                    type="button"
                     class="btn-primary">
                 🚀 Calculer
             </button>
@@ -507,6 +544,7 @@
              class="comments-box">
         </div>
         <button id="btnNouvelleEtude"
+                type="button"
                 class="btn-primary">
             📐 Nouvelle étude
         </button>
@@ -584,23 +622,28 @@
      NAVIGATION BASSE
 ========================================== -->
 <nav class="bottom-nav">
-<button id="navAccueil">
+<button id="navAccueil"
+        type="button">
     <span>🏠</span>
     <small>Accueil</small>
 </button>
-<button id="navEtude">
+<button id="navEtude"
+        type="button">
     <span>📐</span>
     <small>Étude</small>
 </button>
-<button id="navDiagnostic">
+<button id="navDiagnostic"
+        type="button">
     <span>🛠️</span>
     <small>Diagnostic</small>
 </button>
-<button id="navOutils">
+<button id="navOutils"
+        type="button">
     <span>🧰</span>
     <small>Outils</small>
 </button>
-<button id="navAcademie">
+<button id="navAcademie"
+        type="button">
     <span>🎓</span>
     <small>Académie</small>
 </button>
