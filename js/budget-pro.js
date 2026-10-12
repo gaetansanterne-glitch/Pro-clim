@@ -5,7 +5,7 @@ Version 1.0
 ================================================== */
 
 (function () {
-“use strict”;
+"use strict";
 
 function initialiserBudget() {
     const etape5 = document.getElementById("etape5");
