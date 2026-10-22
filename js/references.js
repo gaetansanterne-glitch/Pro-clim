@@ -1,9 +1,8 @@
 
 /* ==================================================
    PRO CLIM — RÉFÉRENCES DE PUISSANCE
-   Module indépendant — Version 1.1
-   Surveillance corrigée
-   Ne modifie pas les calculs existants.
+   Version 1.2 — Lecture des puissances corrigée
+   Module indépendant
 ================================================== */
 
 (function () {
@@ -19,24 +18,26 @@
 
         if (!element) return 0;
 
-        const texte = element.textContent
-            .replace(/\u202f|\u00a0/g, " ")
-            .trim();
+        // Exemples acceptés : 3200 W, 3 200 W, 3 200 W,
+        // 3,2 kW ou 3.2 kW.
+        const texteOriginal = element.textContent.trim();
+        const estKW = /kW/i.test(texteOriginal);
 
-        const correspondance = texte.match(/[\d]+(?:[.,]\d+)?/);
+        const texte = texteOriginal
+            .replace(/[\s\u00a0\u202f]+/g, "")
+            .replace(",", ".");
+
+        const correspondance = texte.match(/\d+(?:\.\d+)?/);
 
         if (!correspondance) return 0;
 
-        const valeur = Number(
-            correspondance[0].replace(",", ".")
-        );
+        const valeur = Number(correspondance[0]);
 
         if (!Number.isFinite(valeur) || valeur <= 0) {
             return 0;
         }
 
-        // Convertit les kilowatts en watts pour uniformiser.
-        return /kW/i.test(texte) ? valeur * 1000 : valeur;
+        return estKW ? valeur : valeur / 1000;
     }
 
     function initialiserReferences() {
@@ -69,20 +70,11 @@
                 "text-align:left"
             ].join(";");
 
-            const budget = document.getElementById(
-                "budgetProClim"
-            );
-
             const bouton = document.getElementById(
                 "btnNouvelleEtude"
             );
 
-            if (budget && budget.parentNode === etape5) {
-                etape5.insertBefore(bloc, budget);
-            } else if (
-                bouton &&
-                bouton.parentNode === etape5
-            ) {
+            if (bouton && bouton.parentNode === etape5) {
                 etape5.insertBefore(bloc, bouton);
             } else {
                 etape5.appendChild(bloc);
@@ -90,61 +82,42 @@
         }
 
         function actualiser() {
-            const puissanceW = lirePuissance();
+            const besoinKW = lirePuissance();
 
-            if (puissanceW <= 0) {
+            if (besoinKW <= 0) {
                 bloc.style.display = "none";
                 return;
             }
 
             bloc.style.display = "block";
 
-            const besoinKW = puissanceW / 1000;
-
             const adaptee = REFERENCES_KW.find(
-                function (puissance) {
-                    return puissance >= besoinKW;
-                }
+                puissance => puissance >= besoinKW
             );
 
             const inferieures = REFERENCES_KW
-                .filter(function (puissance) {
-                    return puissance < besoinKW;
-                })
+                .filter(puissance => puissance < besoinKW)
                 .slice(-2);
 
             const superieures = REFERENCES_KW
-                .filter(function (puissance) {
-                    return puissance >= besoinKW;
-                })
+                .filter(puissance => puissance >= besoinKW)
                 .slice(0, 3);
 
-            const formatKW = function (valeur) {
-                return valeur.toLocaleString("fr-FR", {
+            const formatKW = valeur =>
+                valeur.toLocaleString("fr-FR", {
+                    minimumFractionDigits: 1,
                     maximumFractionDigits: 1
                 }) + " kW";
-            };
 
-            let statut = "";
-            let couleur = "#0D47A1";
-
-            if (adaptee) {
-                statut =
-                    "Référence à étudier : " +
-                    formatKW(adaptee);
-            } else {
-                statut =
-                    "Besoin supérieur aux références listées : " +
-                    "étudier une solution adaptée.";
-                couleur = "#B45309";
-            }
+            const couleur = adaptee ? "#0D47A1" : "#B45309";
 
             const options = [
                 ...inferieures,
                 ...superieures
-            ].filter(function (puissance, index, tableau) {
-                return tableau.indexOf(puissance) === index;
-            });
+            ].filter(
+                (puissance, index, tableau) =>
+                    tableau.indexOf(puissance) === index
+            );
 
             bloc.innerHTML = `
                 <div style="
@@ -157,10 +130,7 @@
                     RÉFÉRENCES ASSOCIÉES
                 </div>
 
-                <h3 style="
-                    margin:0 0 10px;
-                    font-size:20px;
-                ">
+                <h3 style="margin:0 0 10px;font-size:20px;">
                     ❄️ Choix de puissance
                 </h3>
 
@@ -193,27 +163,19 @@
                             : "Étude complémentaire"}
                     </div>
 
-                    <div style="
-                        font-size:13px;
-                        margin-top:6px;
-                    ">
-                        ${statut}
+                    <div style="font-size:13px;margin-top:6px;">
+                        ${adaptee
+                            ? "Première référence supérieure ou égale au besoin."
+                            : "Aucune référence de cette liste ne couvre le besoin."}
                     </div>
                 </div>
 
-                <div style="
-                    font-weight:700;
-                    margin-bottom:8px;
-                ">
+                <div style="font-weight:700;margin-bottom:8px;">
                     Puissances voisines
                 </div>
 
-                <div style="
-                    display:flex;
-                    flex-wrap:wrap;
-                    gap:8px;
-                ">
-                    ${options.map(function (puissance) {
+                <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                    ${options.map(puissance => {
                         const suffisante = puissance >= besoinKW;
 
                         return `
@@ -221,30 +183,29 @@
                                 padding:9px 12px;
                                 border-radius:10px;
                                 border:1px solid ${
-                                    suffisante
-                                        ? "#93c5fd"
-                                        : "#e2e8f0"
+                                    suffisante ? "#93c5fd" : "#e2e8f0"
                                 };
                                 background:${
-                                    suffisante
-                                        ? "#eff6ff"
-                                        : "#f8fafc"
+                                    puissance === adaptee
+                                        ? "#dbeafe"
+                                        : suffisante
+                                            ? "#eff6ff"
+                                            : "#f8fafc"
                                 };
                                 font-weight:700;
                             ">
                                 ${formatKW(puissance)}
-
                                 <div style="
                                     font-size:11px;
                                     font-weight:400;
                                     color:#475569;
                                     margin-top:3px;
                                 ">
-                                    ${
-                                        suffisante
+                                    ${puissance === adaptee
+                                        ? "À examiner en priorité"
+                                        : suffisante
                                             ? "À étudier"
-                                            : "Sous le besoin"
-                                    }
+                                            : "Sous le besoin"}
                                 </div>
                             </div>
                         `;
@@ -258,12 +219,10 @@
                     margin:14px 0 0;
                 ">
                     Aide au pré-dimensionnement uniquement.
-                    Vérifier la puissance réelle aux conditions
-                    de fonctionnement, les déperditions, les
-                    régimes chaud/froid et les données du fabricant.
-                    En multisplit, vérifier également les
-                    combinaisons autorisées entre unités intérieures
-                    et groupe extérieur.
+                    Vérifier les déperditions, les conditions de
+                    fonctionnement et les données du fabricant.
+                    En multisplit, vérifier les combinaisons autorisées
+                    entre unités intérieures et groupe extérieur.
                 </p>
             `;
         }
@@ -271,15 +230,12 @@
         // Premier affichage.
         actualiser();
 
-        // Surveillance de la seule valeur de puissance.
-        // Le bloc de références ne peut donc pas déclencher
-        // sa propre actualisation en boucle.
+        // Surveille uniquement la valeur de puissance :
+        // le bloc de références ne peut pas déclencher sa propre boucle.
         if (!puissanceElement.dataset.referencesObservees) {
             puissanceElement.dataset.referencesObservees = "true";
 
-            const observateur = new MutationObserver(function () {
-                actualiser();
-            });
+            const observateur = new MutationObserver(actualiser);
 
             observateur.observe(puissanceElement, {
                 childList: true,
