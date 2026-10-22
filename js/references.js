@@ -1,7 +1,8 @@
 
 /* ==================================================
    PRO CLIM — RÉFÉRENCES DE PUISSANCE
-   Module indépendant — Version 1.0
+   Module indépendant — Version 1.1
+   Surveillance corrigée
    Ne modifie pas les calculs existants.
 ================================================== */
 
@@ -26,7 +27,7 @@
 
         if (!correspondance) return 0;
 
-        let valeur = Number(
+        const valeur = Number(
             correspondance[0].replace(",", ".")
         );
 
@@ -34,19 +35,19 @@
             return 0;
         }
 
-        // Le résultat d'étude est normalement exprimé en watts.
-        if (/kW/i.test(texte)) {
-            valeur *= 1000;
-        }
-
-        return valeur;
+        // Convertit les kilowatts en watts pour uniformiser.
+        return /kW/i.test(texte) ? valeur * 1000 : valeur;
     }
 
     function initialiserReferences() {
         const etape5 = document.getElementById("etape5");
+        const puissanceElement =
+            document.getElementById("resPuissance");
 
-        if (!etape5) {
-            console.warn("Pro Clim : étape 5 introuvable.");
+        if (!etape5 || !puissanceElement) {
+            console.warn(
+                "Pro Clim : étape 5 ou puissance introuvable."
+            );
             return;
         }
 
@@ -141,8 +142,8 @@
             const options = [
                 ...inferieures,
                 ...superieures
-            ].filter(function (valeur, index, tableau) {
-                return tableau.indexOf(valeur) === index;
+            ].filter(function (puissance, index, tableau) {
+                return tableau.indexOf(puissance) === index;
             });
 
             bloc.innerHTML = `
@@ -176,16 +177,22 @@
                     margin-bottom:14px;
                 ">
                     <div style="font-size:13px;color:#475569;">
-                        ${adaptee ? "Puissance nominale à étudier" : "Attention"}
+                        ${adaptee
+                            ? "Puissance nominale à étudier"
+                            : "Attention"}
                     </div>
+
                     <div style="
                         font-size:23px;
                         font-weight:800;
                         color:${couleur};
                         margin-top:4px;
                     ">
-                        ${adaptee ? formatKW(adaptee) : "Étude complémentaire"}
+                        ${adaptee
+                            ? formatKW(adaptee)
+                            : "Étude complémentaire"}
                     </div>
+
                     <div style="
                         font-size:13px;
                         margin-top:6px;
@@ -213,18 +220,31 @@
                             <div style="
                                 padding:9px 12px;
                                 border-radius:10px;
-                                border:1px solid ${suffisante ? "#93c5fd" : "#e2e8f0"};
-                                background:${suffisante ? "#eff6ff" : "#f8fafc"};
+                                border:1px solid ${
+                                    suffisante
+                                        ? "#93c5fd"
+                                        : "#e2e8f0"
+                                };
+                                background:${
+                                    suffisante
+                                        ? "#eff6ff"
+                                        : "#f8fafc"
+                                };
                                 font-weight:700;
                             ">
                                 ${formatKW(puissance)}
+
                                 <div style="
                                     font-size:11px;
                                     font-weight:400;
                                     color:#475569;
                                     margin-top:3px;
                                 ">
-                                    ${suffisante ? "À étudier" : "Sous le besoin"}
+                                    ${
+                                        suffisante
+                                            ? "À étudier"
+                                            : "Sous le besoin"
+                                    }
                                 </div>
                             </div>
                         `;
@@ -248,18 +268,20 @@
             `;
         }
 
+        // Premier affichage.
         actualiser();
 
-        if (!etape5.dataset.referencesObservees) {
-            etape5.dataset.referencesObservees = "true";
+        // Surveillance de la seule valeur de puissance.
+        // Le bloc de références ne peut donc pas déclencher
+        // sa propre actualisation en boucle.
+        if (!puissanceElement.dataset.referencesObservees) {
+            puissanceElement.dataset.referencesObservees = "true";
 
-            const observateur = new MutationObserver(
-                function () {
-                    actualiser();
-                }
-            );
+            const observateur = new MutationObserver(function () {
+                actualiser();
+            });
 
-            observateur.observe(etape5, {
+            observateur.observe(puissanceElement, {
                 childList: true,
                 subtree: true,
                 characterData: true
