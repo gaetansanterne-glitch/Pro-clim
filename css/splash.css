@@ -1,7 +1,7 @@
 
 /* ==========================================
    PRO CLIM — ÉCRAN DE LANCEMENT
-   Design premium — Version 2.0
+   Identité bleue — Version 3.0
 ========================================== */
 
 #proClimSplash {
@@ -18,11 +18,18 @@
 
     background:
         radial-gradient(
-            ellipse at 50% 44%,
-            rgba(13, 71, 161, 0.16) 0%,
-            rgba(5, 7, 11, 0) 52%
+            ellipse at 50% 42%,
+            rgba(48, 137, 255, 0.48) 0%,
+            rgba(19, 87, 184, 0.24) 35%,
+            transparent 68%
         ),
-        #05070b;
+        linear-gradient(
+            145deg,
+            #173F78 0%,
+            #0D47A1 42%,
+            #082D63 75%,
+            #061D40 100%
+        );
 
     opacity: 1;
     visibility: visible;
@@ -32,7 +39,7 @@
         visibility 0.65s ease;
 }
 
-/* Halo bleu subtil derrière le logo */
+/* Lumière douce derrière le logo */
 
 #proClimSplash::before {
     content: "";
@@ -40,15 +47,15 @@
     position: absolute;
     z-index: -1;
 
-    width: min(75vw, 360px);
+    width: min(78vw, 370px);
     aspect-ratio: 1;
 
     border-radius: 50%;
 
-    background: rgba(0, 102, 255, 0.12);
-    filter: blur(75px);
+    background: rgba(72, 157, 255, 0.24);
+    filter: blur(65px);
 
-    animation: proClimHalo 2.2s ease-in-out infinite alternate;
+    animation: proClimHalo 2.8s ease-in-out infinite alternate;
 }
 
 /* Logo officiel */
@@ -59,19 +66,18 @@
     position: relative;
     z-index: 1;
 
-    width: min(78vw, 400px);
+    width: min(82vw, 410px);
     max-height: 62vh;
 
     object-fit: contain;
 
-    filter: drop-shadow(
-        0 0 22px rgba(0, 102, 255, 0.10)
-    );
+    filter:
+        drop-shadow(0 8px 24px rgba(0, 15, 45, 0.22));
 
-    animation: proClimLogoIntro 0.85s ease-out both;
+    animation: proClimLogoIntro 0.9s ease-out both;
 }
 
-/* Disparition de l'écran */
+/* Sortie fluide */
 
 #proClimSplash.is-hidden {
     opacity: 0;
@@ -79,7 +85,7 @@
     pointer-events: none;
 }
 
-/* Apparition douce du logo */
+/* Apparition du logo */
 
 @keyframes proClimLogoIntro {
     from {
@@ -93,12 +99,12 @@
     }
 }
 
-/* Respiration lumineuse très discrète */
+/* Halo bleu discret */
 
 @keyframes proClimHalo {
     from {
-        opacity: 0.55;
-        transform: scale(0.92);
+        opacity: 0.65;
+        transform: scale(0.94);
     }
 
     to {
@@ -107,12 +113,12 @@
     }
 }
 
-/* Téléphones de petite taille */
+/* Adaptation aux petits écrans */
 
 @media (max-width: 380px) {
     #proClimSplash img {
-        width: 84vw;
-        max-height: 55vh;
+        width: 86vw;
+        max-height: 56vh;
     }
 }
 
