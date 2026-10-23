@@ -1,8 +1,6 @@
 
 /* ==========================================
    PRO CLIM — ÉCRAN DE LANCEMENT
-   Version 1.0
-   Ne modifie pas les calculs de l'application
 ========================================== */
 
 (function () {
@@ -11,9 +9,7 @@
     function lancerEcranProClim() {
         const splash = document.getElementById("proClimSplash");
 
-        if (!splash) {
-            return;
-        }
+        if (!splash) return;
 
         window.setTimeout(function () {
             splash.classList.add("is-hidden");
@@ -23,7 +19,6 @@
                     splash.parentNode.removeChild(splash);
                 }
             }, 550);
-
         }, 1800);
     }
 
