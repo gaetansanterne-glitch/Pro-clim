@@ -1,33 +1,77 @@
 
 /* ==========================================
    PRO CLIM — ÉCRAN DE LANCEMENT
-   Logo officiel — Version 1.0
+   Design premium — Version 2.0
 ========================================== */
 
 #proClimSplash {
     position: fixed;
     inset: 0;
     z-index: 99999;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    background: #05070b;
+
+    overflow: hidden;
+    isolation: isolate;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 44%,
+            rgba(13, 71, 161, 0.16) 0%,
+            rgba(5, 7, 11, 0) 52%
+        ),
+        #05070b;
+
     opacity: 1;
     visibility: visible;
+
     transition:
-        opacity 0.5s ease,
-        visibility 0.5s ease;
+        opacity 0.65s ease,
+        visibility 0.65s ease;
 }
+
+/* Halo bleu subtil derrière le logo */
+
+#proClimSplash::before {
+    content: "";
+
+    position: absolute;
+    z-index: -1;
+
+    width: min(75vw, 360px);
+    aspect-ratio: 1;
+
+    border-radius: 50%;
+
+    background: rgba(0, 102, 255, 0.12);
+    filter: blur(75px);
+
+    animation: proClimHalo 2.2s ease-in-out infinite alternate;
+}
+
+/* Logo officiel */
 
 #proClimSplash img {
     display: block;
-    width: 88%;
-    max-width: 520px;
-    max-height: 75vh;
+
+    position: relative;
+    z-index: 1;
+
+    width: min(78vw, 400px);
+    max-height: 62vh;
+
     object-fit: contain;
-    animation: proClimLogoIntro 0.8s ease both;
+
+    filter: drop-shadow(
+        0 0 22px rgba(0, 102, 255, 0.10)
+    );
+
+    animation: proClimLogoIntro 0.85s ease-out both;
 }
+
+/* Disparition de l'écran */
 
 #proClimSplash.is-hidden {
     opacity: 0;
@@ -35,10 +79,12 @@
     pointer-events: none;
 }
 
+/* Apparition douce du logo */
+
 @keyframes proClimLogoIntro {
     from {
         opacity: 0;
-        transform: scale(0.94);
+        transform: scale(0.96);
     }
 
     to {
@@ -47,9 +93,35 @@
     }
 }
 
+/* Respiration lumineuse très discrète */
+
+@keyframes proClimHalo {
+    from {
+        opacity: 0.55;
+        transform: scale(0.92);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1.06);
+    }
+}
+
+/* Téléphones de petite taille */
+
+@media (max-width: 380px) {
+    #proClimSplash img {
+        width: 84vw;
+        max-height: 55vh;
+    }
+}
+
+/* Respect des préférences de mouvement */
+
 @media (prefers-reduced-motion: reduce) {
     #proClimSplash,
-    #proClimSplash img {
+    #proClimSplash img,
+    #proClimSplash::before {
         animation: none;
         transition: none;
     }
