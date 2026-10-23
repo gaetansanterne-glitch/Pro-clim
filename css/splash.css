@@ -1,0 +1,56 @@
+
+/* ==========================================
+   PRO CLIM — ÉCRAN DE LANCEMENT
+   Logo officiel — Version 1.0
+========================================== */
+
+#proClimSplash {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: #05070b;
+    opacity: 1;
+    visibility: visible;
+    transition:
+        opacity 0.5s ease,
+        visibility 0.5s ease;
+}
+
+#proClimSplash img {
+    display: block;
+    width: 88%;
+    max-width: 520px;
+    max-height: 75vh;
+    object-fit: contain;
+    animation: proClimLogoIntro 0.8s ease both;
+}
+
+#proClimSplash.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+@keyframes proClimLogoIntro {
+    from {
+        opacity: 0;
+        transform: scale(0.94);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #proClimSplash,
+    #proClimSplash img {
+        animation: none;
+        transition: none;
+    }
+}
