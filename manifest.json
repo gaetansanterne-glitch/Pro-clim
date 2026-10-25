@@ -10,5 +10,13 @@
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0D47A1",
-  "theme_color": "#0D47A1"
+  "theme_color": "#0D47A1",
+  "icons": [
+    {
+      "src": "/Pro-clim/assets/icon-pro-clim.png.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }
